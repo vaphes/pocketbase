@@ -28,9 +28,16 @@ dynamic = ["readme", "version"]
 
 [tool.poetry]
 name = "pocketbase"
-version = "0.1.1"
+version = "0.1.2"
 description = "PocketBase SDK for python."
 authors = ["Vithor Jaeger <vaphes@gmail.com>"]
+readme = "README.md"
+homepage = "https://github.com/vaphes/pocketbase"
+repository = "https://github.com/vaphes/pocketbase"
+keywords = ["pocketbase", "sdk"]
+
+[tool.poetry.urls]
+"Bug Tracker" = "https://github.com/vaphes/pocketbase/issues"
 
 [tool.poetry.dependencies]
 python = "^3.10"

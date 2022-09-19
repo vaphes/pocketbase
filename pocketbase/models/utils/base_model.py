@@ -1,5 +1,6 @@
+from __future__ import annotations
+
 from abc import ABC
-from typing import Union
 import datetime
 
 from pocketbase.utils import to_datetime
@@ -7,8 +8,8 @@ from pocketbase.utils import to_datetime
 
 class BaseModel(ABC):
     id: str
-    created: Union[str, datetime.datetime]
-    updated: Union[str, datetime.datetime]
+    created: str | datetime.datetime
+    updated: str | datetime.datetime
 
     def __init__(self, data: dict = {}) -> None:
         super().__init__()
