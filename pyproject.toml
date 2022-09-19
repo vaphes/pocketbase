@@ -1,6 +1,6 @@
 [project]
 name = "pocketbase"
-version = "0.1.0"
+version = "0.1.1"
 description = "PocketBase client SDK for python."
 authors = ["Vithor Jaeger <vaphes@gmail.com>"]
 readme = "README.md"
