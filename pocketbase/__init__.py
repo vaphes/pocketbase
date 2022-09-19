@@ -1,3 +1,6 @@
-from .__version__ import __description__, __title__, __version__
+__title__ = "pocketbase"
+__description__ = "PocketBase client SDK for python."
+__version__ = "0.1.1"
+
 
 from .client import Client, ClientResponseError
