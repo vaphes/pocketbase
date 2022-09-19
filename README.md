@@ -1,6 +1,6 @@
 # PocketBase Python SDK
 
-[![Python 3.10](https://github.com/vaphes/pocketbase/actions/workflows/python-3.10.yml/badge.svg)](https://github.com/vaphes/pocketbase/actions/workflows/python-3.10.yml) [![Python 3.9](https://github.com/vaphes/pocketbase/actions/workflows/python-3.9.yml/badge.svg)](https://github.com/vaphes/pocketbase/actions/workflows/python-3.9.yml) [![Python 3.8](https://github.com/vaphes/pocketbase/actions/workflows/python-3.8.yml/badge.svg)](https://github.com/vaphes/pocketbase/actions/workflows/python-3.8.yml) [![Python 3.7](https://github.com/vaphes/pocketbase/actions/workflows/python-3.7.yml/badge.svg)](https://github.com/vaphes/pocketbase/actions/workflows/python-3.7.yml)
+[![Python 3.6|3.7|3.8|3.9|3.10](https://github.com/vaphes/pocketbase/actions/workflows/python-versions.yml/badge.svg)](https://github.com/vaphes/pocketbase/actions/workflows/python-versions.yml)
 
 Python client SDK for the <a href="https://pocketbase.io/">PocketBase</a> backend.
 
