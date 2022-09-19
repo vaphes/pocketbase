@@ -1,0 +1,6 @@
+/.venv
+/.vscode
+/dist
+/poetry.lock
+/pyproject.toml
+/tests
