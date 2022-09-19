@@ -1,4 +1,4 @@
-from typing import Any, Union
+from typing import Union
 import datetime
 
 from pocketbase.utils import to_datetime
@@ -10,7 +10,7 @@ class Admin(BaseModel):
     email: str
     last_reset_sent_at: Union[str, datetime.datetime]
 
-    def load(self, data: dict[str:Any]) -> None:
+    def load(self, data: dict) -> None:
         super().load(data)
         self.avatar = data.get("avatar", 0)
         self.email = data.get("email", "")

@@ -35,7 +35,7 @@ class AuthMethodsList:
 
 
 class Users(CrudService):
-    def decode(self, data: dict[str:Any]) -> BaseModel:
+    def decode(self, data: dict) -> BaseModel:
         return User(data)
 
     def base_crud_path(self) -> str:

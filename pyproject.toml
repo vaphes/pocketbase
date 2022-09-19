@@ -1,25 +1,35 @@
 [project]
 name = "pocketbase"
-version = "0.1.1"
-description = "PocketBase client SDK for python."
-authors = ["Vithor Jaeger <vaphes@gmail.com>"]
-readme = "README.md"
+description = "PocketBase SDK for python."
 requires-python = ">=3.7"
+license = "MIT"
+authors = [
+    { name = "Vithor Jaeger", email = "vaphes@gmail.com" },
+]
 classifiers = [
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
+    "Intended Audience :: Developers",
 ]
-keywords = "pocketbase client sdk"
+keywords = "pocketbase sdk"
+dependencies = ["httpx>=0.23.0"]
+dynamic = ["readme", "version"]
 
 [project.urls]
 "Homepage" = "https://github.com/vaphes/pocketbase"
+"Source" = "https://github.com/vaphes/pocketbase"
 "Bug Tracker" = "https://github.com/vaphes/pocketbase/issues"
 
 [tool.poetry]
 name = "pocketbase"
-version = "0.1.0"
-description = "PocketBase client SDK for python."
+version = "0.1.1"
+description = "PocketBase SDK for python."
 authors = ["Vithor Jaeger <vaphes@gmail.com>"]
 
 [tool.poetry.dependencies]

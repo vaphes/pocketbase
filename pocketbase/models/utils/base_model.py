@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import Any, Union
+from typing import Union
 import datetime
 
 from pocketbase.utils import to_datetime
@@ -10,11 +10,11 @@ class BaseModel(ABC):
     created: Union[str, datetime.datetime]
     updated: Union[str, datetime.datetime]
 
-    def __init__(self, data: dict[str:Any] = {}) -> None:
+    def __init__(self, data: dict = {}) -> None:
         super().__init__()
         self.load(data)
 
-    def load(self, data: dict[str:Any]) -> None:
+    def load(self, data: dict) -> None:
         """Loads `data` into the current model."""
         self.id = data.pop("id", "")
         self.created = to_datetime(data.pop("created", ""))

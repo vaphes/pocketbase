@@ -1,5 +1,3 @@
-from typing import Any
-
 from pocketbase.models.utils.base_model import BaseModel
 
 
@@ -12,9 +10,9 @@ class LogRequest(BaseModel):
     user_ip: str
     referer: str
     user_agent: str
-    meta: dict[str:Any]
+    meta: dict
 
-    def load(self, data: dict[str:Any]) -> None:
+    def load(self, data: dict) -> None:
         super().load(data)
         self.url = data.get("url", "")
         self.method = data.get("method", "")

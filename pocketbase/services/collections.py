@@ -1,12 +1,10 @@
-from typing import Any
-
 from pocketbase.services.utils.crud_service import CrudService
 from pocketbase.models.utils.base_model import BaseModel
 from pocketbase.models.collection import Collection
 
 
 class Collections(CrudService):
-    def decode(self, data: dict[str:Any]) -> BaseModel:
+    def decode(self, data: dict) -> BaseModel:
         return Collection(data)
 
     def base_crud_path(self) -> str:
@@ -14,7 +12,7 @@ class Collections(CrudService):
 
     def import_collections(
         self,
-        collections: list[Collection],
+        collections: list,
         delete_missing: bool = False,
         query_params: dict = {},
     ) -> bool:

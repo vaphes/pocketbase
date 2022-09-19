@@ -1,5 +1,3 @@
-from typing import Any
-
 from pocketbase.models.utils.base_model import BaseModel
 from pocketbase.utils import camel_to_snake
 
@@ -7,9 +5,9 @@ from pocketbase.utils import camel_to_snake
 class Record(BaseModel):
     collection_id: str
     collection_name: str
-    expand: dict[str:Any]
+    expand: dict
 
-    def load(self, data: dict[str:Any]) -> None:
+    def load(self, data: dict) -> None:
         super().load(data)
         for key, value in data.items():
             key = camel_to_snake(key).replace("@", "")
@@ -22,7 +20,7 @@ class Record(BaseModel):
             self.load_expanded()
 
     @classmethod
-    def parse_expanded(cls, data: dict[str:Any]):
+    def parse_expanded(cls, data: dict):
         return cls(data)
 
     def load_expanded(self) -> None:

@@ -1,4 +1,4 @@
-from typing import Any, Optional, Union
+from typing import Optional, Union
 import datetime
 
 from pocketbase.utils import to_datetime
@@ -13,7 +13,7 @@ class User(BaseModel):
     last_verification_sent_at: Union[str, datetime.datetime]
     profile: Optional[Record]
 
-    def load(self, data: dict[str:Any]) -> None:
+    def load(self, data: dict) -> None:
         super().load(data)
         self.email = data.get("email", "")
         self.verified = data.get("verified", "")

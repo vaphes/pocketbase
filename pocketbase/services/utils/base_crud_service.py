@@ -1,7 +1,5 @@
 from abc import ABC
 from urllib.parse import quote
-from typing import Any
-
 
 from pocketbase.models.utils.base_model import BaseModel
 from pocketbase.models.utils.list_result import ListResult
@@ -9,7 +7,7 @@ from pocketbase.services.utils.base_service import BaseService
 
 
 class BaseCrudService(BaseService, ABC):
-    def decode(self, data: dict[str:Any]) -> BaseModel:
+    def decode(self, data: dict) -> BaseModel:
         """Response data decoder"""
 
     def _get_full_list(
@@ -18,7 +16,7 @@ class BaseCrudService(BaseService, ABC):
 
         result: list[BaseModel] = []
 
-        def request(result: list[BaseModel], page: int) -> list[Any]:
+        def request(result: list[BaseModel], page: int) -> list:
             list = self._get_list(base_path, page, batch_size, query_params)
             items = list.items
             total_items = list.total_items

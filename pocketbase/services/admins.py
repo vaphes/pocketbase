@@ -1,4 +1,3 @@
-from typing import Any
 from pocketbase.models.utils.base_model import BaseModel
 from pocketbase.services.utils.crud_service import CrudService
 from pocketbase.models.admin import Admin
@@ -16,7 +15,7 @@ class AdminAuthResponse:
 
 
 class Admins(CrudService):
-    def decode(self, data: dict[str:Any]) -> BaseModel:
+    def decode(self, data: dict) -> BaseModel:
         return Admin(data)
 
     def base_crud_path(self) -> str:

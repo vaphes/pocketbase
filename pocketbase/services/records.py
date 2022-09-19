@@ -1,4 +1,3 @@
-from typing import Any
 from urllib.parse import quote, urlencode
 
 from pocketbase.services.utils.sub_crud_service import SubCrudService
@@ -7,7 +6,7 @@ from pocketbase.models.record import Record
 
 
 class Records(SubCrudService):
-    def decode(self, data: dict[str:Any]) -> BaseModel:
+    def decode(self, data: dict) -> BaseModel:
         return Record(data)
 
     def base_crud_path(self, collection_id_or_name: str) -> str:

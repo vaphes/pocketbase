@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Optional
 
 from pocketbase.models.utils.base_model import BaseModel
 from pocketbase.models.utils.schema_field import SchemaField
@@ -14,7 +14,7 @@ class Collection(BaseModel):
     update_rule: Optional[str]
     delete_rule: Optional[str]
 
-    def load(self, data: dict[str:Any]) -> None:
+    def load(self, data: dict) -> None:
         super().load(data)
         self.name = data.get("name", "")
         self.system = data.get("system", False)
