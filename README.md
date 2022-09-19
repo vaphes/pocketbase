@@ -4,7 +4,7 @@
 
 Python client SDK for the <a href="https://pocketbase.io/">PocketBase</a> backend.
 
-This is in early development, and at first is just a translations for <a href="https://github.com/pocketbase/js-sdk">the javascript lib</a>.
+This is in early development, and at first is just a translation of <a href="https://github.com/pocketbase/js-sdk">the javascript lib</a> using <a href="https://github.com/encode/httpx/">HTTPX</a>.
 
 ---
 
