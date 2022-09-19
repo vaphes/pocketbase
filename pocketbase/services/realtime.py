@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Callable, Optional
 from pocketbase.services.utils.base_service import BaseService
 from pocketbase.models.record import Record

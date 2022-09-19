@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from urllib.parse import quote, urlencode
 
 from pocketbase.services.utils.sub_crud_service import SubCrudService

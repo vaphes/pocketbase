@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pocketbase.services.utils.base_service import BaseService
 
 

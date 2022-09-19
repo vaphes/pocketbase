@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pocketbase.models.utils.base_model import BaseModel
 from pocketbase.services.utils.crud_service import CrudService
 from pocketbase.models.admin import Admin

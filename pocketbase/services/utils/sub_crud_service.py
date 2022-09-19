@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from abc import ABC
 
 from pocketbase.models.utils.base_model import BaseModel

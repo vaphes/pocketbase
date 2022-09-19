@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from dataclasses import dataclass, field
 
 from pocketbase.models.utils.base_model import BaseModel
