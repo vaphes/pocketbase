@@ -22,5 +22,5 @@ class Records(SubCrudService):
             base_url = base_url[:-1]
         result = f"{base_url}/api/files/{record.collection_id}/{record.id}/{filename}"
         if query_params:
-            results += "?" + urlencode(query_params)
+            result += "?" + urlencode(query_params)
         return result

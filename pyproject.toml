@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "pocketbase"
 version = "0.1.0"
-description = ""
+description = "PocketBase client SDK for python."
 authors = ["Vithor Jaeger <vaphes@gmail.com>"]
 
 [tool.poetry.dependencies]
