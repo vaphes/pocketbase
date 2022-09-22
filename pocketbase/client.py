@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from typing import Any
-from urllib.parse import urlencode
 
 import httpx
 
@@ -125,22 +124,3 @@ class Client:
         if path.startswith("/"):
             path = path[1:]
         return url + path
-
-
-if __name__ == "__main__":
-    from pocketbase.stores.local_auth_store import LocalAuthStore
-
-    pb = Client(base_url="http://ares.olimpo:8090/", auth_store=LocalAuthStore())
-    # pb.admins.auth_via_email("vaphes@gmail.com", "vaphes2007")
-    print(pb.auth_store.token)
-    books = pb.collections.get_one("books")
-    print("ok")
-    # sacd = "nwvgaw6iiibv4fp"
-    # book = {
-    #     "author": sacd,
-    #     "name": "A study in red",
-    #     "rating": 4.5,
-    #     "summary": "The worst Sherlock Homes book",
-    # }
-    # data = pb.records.create("books", book)
-    # print(data)

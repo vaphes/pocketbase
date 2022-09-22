@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 from urllib.parse import quote
+
 from pocketbase.services.utils.crud_service import CrudService
 from pocketbase.models.utils.base_model import BaseModel
 from pocketbase.models.user import User

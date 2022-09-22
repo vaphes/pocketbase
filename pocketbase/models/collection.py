@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional
-
 from pocketbase.models.utils.base_model import BaseModel
 from pocketbase.models.utils.schema_field import SchemaField
 
@@ -10,11 +8,11 @@ class Collection(BaseModel):
     name: str
     schema: list[SchemaField]
     system: bool
-    list_rule: Optional[str]
-    view_rule: Optional[str]
-    create_rule: Optional[str]
-    update_rule: Optional[str]
-    delete_rule: Optional[str]
+    list_rule: str | None
+    view_rule: str | None
+    create_rule: str | None
+    update_rule: str | None
+    delete_rule: str | None
 
     def load(self, data: dict) -> None:
         super().load(data)

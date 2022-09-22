@@ -11,9 +11,9 @@ from pocketbase.models.utils.base_model import BaseModel
 class User(BaseModel):
     email: str
     verified: bool
-    last_reset_sent_at: Union[str, datetime.datetime]
-    last_verification_sent_at: Union[str, datetime.datetime]
-    profile: Optional[Record]
+    last_reset_sent_at: str | datetime.datetime
+    last_verification_sent_at: str | datetime.datetime
+    profile: Record | None
 
     def load(self, data: dict) -> None:
         super().load(data)

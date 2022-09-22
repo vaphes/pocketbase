@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Optional, Union
+from typing import Any
 import pickle
 import os
 
@@ -18,7 +18,7 @@ class LocalAuthStore(BaseAuthStore):
         filename: str = "pocketbase_auth.data",
         filepath: str = "",
         base_token: str = "",
-        base_model: Optional[Union[User, Admin]] = None,
+        base_model: User | Admin | None = None,
     ) -> None:
         super().__init__(base_token, base_model)
         self.filename = filename
@@ -33,13 +33,13 @@ class LocalAuthStore(BaseAuthStore):
         return data["token"]
 
     @property
-    def model(self) -> Union[User, Admin, None]:
+    def model(self) -> User | Admin | None:
         data = self._storage_get(self.complete_filepath)
         if not data or not "model" in data:
             return None
         return data["model"]
 
-    def save(self, token: str = "", model: Optional[Union[User, Admin]] = None) -> None:
+    def save(self, token: str = "", model: User | Admin | None = None) -> None:
         self._storage_set(self.complete_filepath, {"token": token, "model": model})
         super().save(token, model)
 
