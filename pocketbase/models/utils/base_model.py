@@ -15,6 +15,12 @@ class BaseModel(ABC):
         super().__init__()
         self.load(data)
 
+    def __str__(self) -> str:
+        return f"<{self.__class__.__name__}: {self.id}>"
+
+    def __repr__(self) -> str:
+        return self.__str__()
+
     def load(self, data: dict) -> None:
         """Loads `data` into the current model."""
         self.id = data.pop("id", "")

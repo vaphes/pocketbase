@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import re
 import datetime
-from typing import Union
 
 
 def camel_to_snake(name: str) -> str:
@@ -12,7 +11,7 @@ def camel_to_snake(name: str) -> str:
 
 def to_datetime(
     str_datetime: str, format: str = "%Y-%m-%d %H:%M:%S"
-) -> Union[datetime.datetime, str]:
+) -> datetime.datetime | str:
     str_datetime = str_datetime.split(".")[0]
     try:
         return datetime.datetime.strptime(str_datetime, format)
