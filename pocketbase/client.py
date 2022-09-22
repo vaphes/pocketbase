@@ -13,8 +13,6 @@ from pocketbase.services.users import Users
 from pocketbase.services.settings import Settings
 from pocketbase.stores.base_auth_store import BaseAuthStore
 
-# from pocketbase.stores.local_auth_store import LocalAuthStore
-
 
 class ClientResponseError(Exception):
     url: str = ""
