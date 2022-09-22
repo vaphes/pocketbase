@@ -19,7 +19,7 @@ class ClientResponseError(Exception):
     status: int = 0
     data: dict = {}
     is_abort: bool = False
-    original_error: Any = None
+    original_error: Any | None = None
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args)
@@ -46,7 +46,7 @@ class Client:
         self,
         base_url: str = "/",
         lang: str = "en-US",
-        auth_store: BaseAuthStore = None,
+        auth_store: BaseAuthStore | None = None,
     ) -> None:
         self.base_url = base_url
         self.lang = lang
@@ -59,12 +59,6 @@ class Client:
         self.logs = Logs(self)
         self.settings = Settings(self)
         self.realtime = Realtime(self)
-
-    def cancel_request(self, cancel_key: str):
-        return self
-
-    def cancel_all_requests(self):
-        return self
 
     def send(self, path: str, req_config: dict[str:Any]) -> Any:
         """Sends an api http request."""

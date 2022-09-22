@@ -28,7 +28,7 @@ dynamic = ["readme", "version"]
 
 [tool.poetry]
 name = "pocketbase"
-version = "0.1.2"
+version = "0.1.3"
 description = "PocketBase SDK for python."
 authors = ["Vithor Jaeger <vaphes@gmail.com>"]
 readme = "README.md"

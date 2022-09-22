@@ -1,11 +1,13 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from typing import Callable
+import dataclasses
+import asyncio
 
 import httpx
 
 
-@dataclass
+@dataclasses.dataclass
 class Event:
     """Representation of an event"""
 
@@ -19,6 +21,8 @@ class SSEClient:
     """Implementation of a server side event client"""
 
     FIELD_SEPARATOR = ":"
+    _listeners: dict = {}
+    _loop_running: bool = False
 
     def __init__(
         self,
@@ -33,14 +37,15 @@ class SSEClient:
         self.headers = headers
         self.payload = payload
         self.encoding = encoding
+        self.client = httpx.AsyncClient()
 
-    def _read(self):
+    async def _read(self):
         """Read the incoming event source stream and yield event chunks"""
         data = b""
-        with httpx.stream(
+        async with self.client.stream(
             self.method, self.url, headers=self.headers, data=self.payload, timeout=None
         ) as r:
-            for chunk in r.iter_bytes():
+            async for chunk in r.aiter_bytes():
                 for line in chunk.splitlines(True):
                     data += line
                     if data.endswith((b"\r\r", b"\n\n", b"\r\n\r\n")):
@@ -49,8 +54,8 @@ class SSEClient:
             if data:
                 yield data
 
-    def events(self):
-        for chunk in self._read():
+    async def _events(self):
+        async for chunk in self._read():
             event = Event()
             for line in chunk.splitlines():
                 line = line.decode(self.encoding)
@@ -77,3 +82,23 @@ class SSEClient:
                 event.data = event.data[0:-1]
             event.event = event.event or "message"
             yield event
+
+    async def _loop(self):
+        self._loop_running = True
+        async for event in self._events():
+            if event.event in self._listeners:
+                self._listeners[event.event](event)
+
+    def add_event_listener(self, event: str, callback: Callable[[Event], None]) -> None:
+        self._listeners[event] = callback
+        if not self._loop_running:
+            asyncio.run(self._loop())
+
+    def remove_event_listener(
+        self, event: str, callback: Callable[[Event], None]
+    ) -> None:
+        if event in self._listeners:
+            self._listeners.pop(event)
+
+    def close(self) -> None:
+        pass
