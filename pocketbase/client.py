@@ -66,7 +66,7 @@ class Client:
         config.update(req_config)
         # check if Authorization header can be added
         if self.auth_store.token and (
-            not "headers" in config or "Authorization" not in config["headers"]
+            "headers" not in config or "Authorization" not in config["headers"]
         ):
             auth_type = "Admin"
             if hasattr(self.auth_store.model, "verified"):

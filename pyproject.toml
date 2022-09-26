@@ -28,7 +28,7 @@ dynamic = ["readme", "version"]
 
 [tool.poetry]
 name = "pocketbase"
-version = "0.2.0"
+version = "0.2.1"
 description = "PocketBase SDK for python."
 authors = ["Vithor Jaeger <vaphes@gmail.com>"]
 readme = "README.md"
@@ -43,8 +43,9 @@ keywords = ["pocketbase", "sdk"]
 python = "^3.7"
 httpx = "^0.23.0"
 
-[tool.poetry.dev-dependencies]
-pytest = "^5.2"
+[tool.poetry.group.dev.dependencies]
+flake8 = "^5.0.4"
+pytest = "^7.1.3"
 black = {version = "^22.8.0", allow-prereleases = true}
 
 [build-system]
