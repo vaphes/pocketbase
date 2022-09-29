@@ -28,7 +28,7 @@ dynamic = ["readme", "version"]
 
 [tool.poetry]
 name = "pocketbase"
-version = "0.2.1"
+version = "0.2.2"
 description = "PocketBase SDK for python."
 authors = ["Vithor Jaeger <vaphes@gmail.com>"]
 readme = "README.md"
@@ -47,6 +47,11 @@ httpx = "^0.23.0"
 flake8 = "^5.0.4"
 pytest = "^7.1.3"
 black = {version = "^22.8.0", allow-prereleases = true}
+pytest-cov = "^3.0.0"
+
+[tool.pytest.ini_options]
+addopts="--cov=pocketbase"
+testpaths=["tests",]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

@@ -21,9 +21,9 @@ $ pip install pocketbase
 The rule of thumb here is just to use it as you would <a href="https://github.com/pocketbase/js-sdk">the javascript lib</a>, but in a pythonic way of course!
 
 ```python
-from pocketbase import Client
+from pocketbase import PocketBase # Client also works the same
 
-client = Client('http://127.0.0.1:8090')
+client = PocketBase('http://127.0.0.1:8090')
 
 ...
 
