@@ -16,12 +16,38 @@ class AdminAuthResponse:
             setattr(self, key, value)
 
 
-class Admins(CrudService):
+class AdminService(CrudService):
     def decode(self, data: dict) -> BaseModel:
         return Admin(data)
 
     def base_crud_path(self) -> str:
         return "/api/admins"
+
+    def update(self, id: str, body_params: dict, query_params: dict) -> BaseModel:
+        """
+        If the current `client.auth_store.model` matches with the updated id,
+        then on success the `client.auth_store.model` will be updated with the result.
+        """
+        item = super(AdminService).update(id, body_params)
+        try:
+            if self.client.auth_store.model.collection_id is not None and item.id == self.client.auth_store.model.id:
+                self.client.auth_store.save(self.client.auth_store.token, item)
+        except:
+            pass
+        return item
+
+    def delete(self, id: str, body_params: dict, query_params: dict) -> BaseModel:
+        """
+        If the current `client.auth_store.model` matches with the deleted id,
+        then on success the `client.auth_store` will be cleared.
+        """
+        item = super(AdminService).delete(id, body_params)
+        try:
+            if self.client.auth_store.model.collection_id is not None and item.id == self.client.auth_store.model.id:
+                self.client.auth_store.save(self.client.auth_store.token, item)
+        except:
+            pass
+        return item
 
     def auth_response(self, response_data: dict) -> AdminAuthResponse:
         """Prepare successful authorize response."""
@@ -31,18 +57,18 @@ class Admins(CrudService):
             self.client.auth_store.save(token, admin)
         return AdminAuthResponse(token=token, admin=admin, **response_data)
 
-    def auth_via_email(
+    def auth_with_password(
         self, email: str, password: str, body_params: dict = {}, query_params: dict = {}
     ) -> AdminAuthResponse:
         """
-        Authenticate an admin account by its email and password
+        Authenticate an admin account with its email and password
         and returns a new admin token and data.
 
         On success this method automatically updates the client's AuthStore data.
         """
-        body_params.update({"email": email, "password": password})
+        body_params.update({"identity": email, "password": password})
         response_data = self.client.send(
-            self.base_crud_path() + "/auth-via-email",
+            self.base_crud_path() + "/auth-with-password",
             {
                 "method": "POST",
                 "params": query_params,
@@ -52,7 +78,7 @@ class Admins(CrudService):
         )
         return self.auth_response(response_data)
 
-    def refresh(
+    def authRefresh(
         self, body_params: dict = {}, query_params: dict = {}
     ) -> AdminAuthResponse:
         """
@@ -63,7 +89,7 @@ class Admins(CrudService):
         """
         return self.auth_response(
             self.client.send(
-                self.base_crud_path() + "/refresh",
+                self.base_crud_path() + "/auth-refresh",
                 {"method": "POST", "params": query_params, "body": body_params},
             )
         )

@@ -3,7 +3,7 @@ from __future__ import annotations
 from pocketbase.services.utils.base_service import BaseService
 
 
-class Settings(BaseService):
+class SettingsService(BaseService):
     def get_all(self, query_params: dict = {}) -> dict:
         """Fetch all available app settings."""
         return self.client.send(

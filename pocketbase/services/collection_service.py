@@ -5,7 +5,7 @@ from pocketbase.models.utils.base_model import BaseModel
 from pocketbase.models.collection import Collection
 
 
-class Collections(CrudService):
+class CollectionService(CrudService):
     def decode(self, data: dict) -> BaseModel:
         return Collection(data)
 
