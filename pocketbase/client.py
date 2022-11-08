@@ -1,46 +1,33 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Dict
+from urllib.parse import quote, urlencode
 
 import httpx
 
-from pocketbase.services.admins import Admins
-from pocketbase.services.collections import Collections
-from pocketbase.services.logs import Logs
-from pocketbase.services.realtime import Realtime
-from pocketbase.services.records import Records
-from pocketbase.services.users import Users
-from pocketbase.services.settings import Settings
+from pocketbase.utils import ClientResponseError
+from pocketbase.models.record import Record
+from pocketbase.services.admin_service import AdminService
+from pocketbase.services.collection_service import CollectionService
+from pocketbase.services.log_service import LogService
+from pocketbase.services.realtime_service import RealtimeService
+from pocketbase.services.record_service import RecordService
+from pocketbase.services.settings_service import SettingsService
 from pocketbase.stores.base_auth_store import BaseAuthStore
-
-
-class ClientResponseError(Exception):
-    url: str = ""
-    status: int = 0
-    data: dict = {}
-    is_abort: bool = False
-    original_error: Any | None = None
-
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args)
-        self.url = kwargs.get("url", "")
-        self.status = kwargs.get("status", 0)
-        self.data = kwargs.get("data", {})
-        self.is_abort = kwargs.get("is_abort", False)
-        self.original_error = kwargs.get("original_error", None)
 
 
 class Client:
     base_url: str
     lang: str
     auth_store: BaseAuthStore
-    settings: Settings
-    admins: Admins
-    users: Users
-    collections: Collections
-    records: Records
-    logs: Logs
-    realtime: Realtime
+    settings: SettingsService
+    admins: AdminService
+    records: Record
+    collections: CollectionService
+    records: RecordService
+    logs: LogService
+    realtime: RealtimeService
+    record_service: Dict[str, RecordService]
 
     def __init__(
         self,
@@ -52,13 +39,18 @@ class Client:
         self.lang = lang
         self.auth_store = auth_store or BaseAuthStore()  # LocalAuthStore()
         # services
-        self.admins = Admins(self)
-        self.users = Users(self)
-        self.records = Records(self)
-        self.collections = Collections(self)
-        self.logs = Logs(self)
-        self.settings = Settings(self)
-        self.realtime = Realtime(self)
+        self.admins = AdminService(self)
+        self.collections = CollectionService(self)
+        self.logs = LogService(self)
+        self.settings = SettingsService(self)
+        self.realtime = RealtimeService(self)
+        self.record_service = {}
+
+    def collection(self, id_or_name: str) -> RecordService:
+        """Returns the RecordService associated to the specified collection."""
+        if id_or_name not in self.record_service:
+            self.record_service[id_or_name] = RecordService(self, id_or_name)
+        return self.record_service[id_or_name]
 
     def send(self, path: str, req_config: dict[str:Any]) -> Any:
         """Sends an api http request."""
@@ -68,12 +60,9 @@ class Client:
         if self.auth_store.token and (
             "headers" not in config or "Authorization" not in config["headers"]
         ):
-            auth_type = "Admin"
-            if hasattr(self.auth_store.model, "verified"):
-                auth_type = "User"
             config["headers"] = config.get("headers", {})
             config["headers"].update(
-                {"Authorization": f"{auth_type} {self.auth_store.token}"}
+                {"Authorization": self.auth_store.token}
             )
         # build url + path
         url = self.build_url(path)
@@ -108,6 +97,21 @@ class Client:
                 data=data,
             )
         return data
+
+    def get_file_url(self, record: Record, filename: str, query_params: dict):
+        parts = [
+            'api',
+            'files',
+            quote(record.collection_id or record.collection_name),
+            quote(record.id),
+            quote(filename),
+        ]
+        result = self.build_url('/'.join(parts))
+        if len(query_params) != 0:
+            params: str = urlencode(query_params)
+            result += '&' if '?' in result else '?'
+            result += params
+        return result
 
     def build_url(self, path: str) -> str:
         url = self.base_url

@@ -17,7 +17,7 @@ class HourlyStats:
     date: Union[str, datetime.datetime]
 
 
-class Logs(BaseService):
+class LogService(BaseService):
     def get_request_list(
         self, page: int = 1, per_page: int = 30, query_params: dict = {}
     ) -> ListResult:

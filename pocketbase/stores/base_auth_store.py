@@ -3,7 +3,7 @@ from __future__ import annotations
 from abc import ABC
 
 from pocketbase.models.admin import Admin
-from pocketbase.models.user import User
+from pocketbase.models.record import Record
 
 
 class BaseAuthStore(ABC):
@@ -13,10 +13,10 @@ class BaseAuthStore(ABC):
     """
 
     base_token: str
-    base_model: User | Admin | None
+    base_model: Record | Admin | None
 
     def __init__(
-        self, base_token: str = "", base_model: User | Admin | None = None
+        self, base_token: str = "", base_model: Record | Admin | None = None
     ) -> None:
         super().__init__()
         self.base_token = base_token
@@ -28,14 +28,15 @@ class BaseAuthStore(ABC):
         return self.base_token
 
     @property
-    def model(self) -> User | Admin | None:
+    def model(self) -> Record | Admin | None:
         """Retrieves the stored model data (if any)."""
         return self.base_model
 
-    def save(self, token: str = "", model: User | Admin | None = None) -> None:
+    def save(self, token: str = "", model: Record | Admin | None = None) -> None:
         """Saves the provided new token and model data in the auth store."""
-        self.base_token = token
-        self.base_model = model
+
+        self.base_token = token if token else ""
+        self.base_model = model if model else None
 
     def clear(self) -> None:
         """Removes the stored token and model data form the auth store."""
