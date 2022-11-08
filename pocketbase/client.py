@@ -107,7 +107,7 @@ class Client:
             quote(filename),
         ]
         result = self.build_url('/'.join(parts))
-        if(len(query_params) != 0):
+        if len(query_params) != 0:
             params: str = urlencode(query_params)
             result += '&' if '?' in result else '?'
             result += params

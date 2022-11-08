@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import re
 import datetime
+from typing import Any
 
 
 def camel_to_snake(name: str) -> str:
