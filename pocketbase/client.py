@@ -1,4 +1,6 @@
 from __future__ import annotations
+from pocketbase.stores.base_auth_store import BaseAuthStore
+from pocketbase.models import FileUpload
 
 from typing import Any, Dict
 from urllib.parse import quote, urlencode
@@ -71,6 +73,21 @@ class Client:
         params = config.get("params", None)
         headers = config.get("headers", None)
         body = config.get("body", None)
+        # handle requests including files as multipart:
+        data = {}
+        files = ()
+        for k, v in (body if isinstance(body, dict) else {}).items():
+            if isinstance(v, FileUpload):
+                files += v.get(k)
+            else:
+                data[k] = v
+        if len(files) > 0:
+            # discard body, switch to multipart encoding
+            body = None
+        else:
+            # discard files+data (do not use multipart encoding)
+            files = None
+            data = None
         try:
             response = httpx.request(
                 method=method,
@@ -78,6 +95,8 @@ class Client:
                 params=params,
                 headers=headers,
                 json=body,
+                data=data,
+                files=files,
                 timeout=120,
             )
         except Exception as e:
