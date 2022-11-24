@@ -1,4 +1,6 @@
 from __future__ import annotations
+from pocketbase.stores.base_auth_store import BaseAuthStore
+from pocketbase.models import FileUpload
 
 from typing import Any, Dict
 from urllib.parse import quote, urlencode
