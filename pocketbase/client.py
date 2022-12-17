@@ -1,21 +1,19 @@
 from __future__ import annotations
+from pocketbase.services.admin_service import AdminService
 from pocketbase.stores.base_auth_store import BaseAuthStore
+from pocketbase.services.settings_service import SettingsService
+from pocketbase.services.record_service import RecordService
+from pocketbase.services.realtime_service import RealtimeService
+from pocketbase.services.log_service import LogService
+from pocketbase.services.collection_service import CollectionService
+from pocketbase.utils import ClientResponseError
+from pocketbase.models.record import Record
 from pocketbase.models import FileUpload
 
 from typing import Any, Dict
 from urllib.parse import quote, urlencode
 
 import httpx
-
-from pocketbase.utils import ClientResponseError
-from pocketbase.models.record import Record
-from pocketbase.services.admin_service import AdminService
-from pocketbase.services.collection_service import CollectionService
-from pocketbase.services.log_service import LogService
-from pocketbase.services.realtime_service import RealtimeService
-from pocketbase.services.record_service import RecordService
-from pocketbase.services.settings_service import SettingsService
-from pocketbase.stores.base_auth_store import BaseAuthStore
 
 
 class Client:
