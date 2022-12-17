@@ -76,9 +76,7 @@ class RealtimeService(BaseService):
             found = False
             for sub in self.subscriptions:
                 found = True
-                self.event_source.remove_event_listener(
-                    sub, self.subscriptions[sub]
-                )
+                self.event_source.remove_event_listener(sub, self.subscriptions[sub])
                 self.subscriptions.pop(sub)
             if not found:
                 return
@@ -141,15 +139,13 @@ class RealtimeService(BaseService):
     def _connect(self) -> None:
         self._disconnect()
         self.event_source = SSEClient(self.client.build_url("/api/realtime"))
-        self.event_source.add_event_listener(
-            "PB_CONNECT", self._connect_handler)
+        self.event_source.add_event_listener("PB_CONNECT", self._connect_handler)
 
     def _disconnect(self) -> None:
         self._remove_subscription_listeners()
         self.client_id = ""
         if not self.event_source:
             return
-        self.event_source.remove_event_listener(
-            "PB_CONNECT", self._connect_handler)
+        self.event_source.remove_event_listener("PB_CONNECT", self._connect_handler)
         self.event_source.close()
         self.event_source = None

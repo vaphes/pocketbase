@@ -1,5 +1,6 @@
 from httpx._types import FileTypes
 from typing import Sequence, Union
+
 FileUploadTypes = Union[FileTypes, Sequence[FileTypes]]
 
 

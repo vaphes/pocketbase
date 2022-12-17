@@ -30,7 +30,10 @@ class AdminService(CrudService):
         """
         item = super(AdminService).update(id, body_params)
         try:
-            if self.client.auth_store.model.collection_id is not None and item.id == self.client.auth_store.model.id:
+            if (
+                self.client.auth_store.model.collection_id is not None
+                and item.id == self.client.auth_store.model.id
+            ):
                 self.client.auth_store.save(self.client.auth_store.token, item)
         except:
             pass
@@ -43,7 +46,10 @@ class AdminService(CrudService):
         """
         item = super(AdminService).delete(id, body_params)
         try:
-            if self.client.auth_store.model.collection_id is not None and item.id == self.client.auth_store.model.id:
+            if (
+                self.client.auth_store.model.collection_id is not None
+                and item.id == self.client.auth_store.model.id
+            ):
                 self.client.auth_store.save(self.client.auth_store.token, item)
         except:
             pass
