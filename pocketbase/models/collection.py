@@ -37,10 +37,10 @@ class Collection(BaseModel):
             self.schema.append(SchemaField(**field))
 
     def is_base(self):
-        return self.type == 'base'
+        return self.type == "base"
 
     def is_auth(self):
-        return self.type == 'auth'
+        return self.type == "auth"
 
     def is_single(self):
-        return self.type == 'single'
+        return self.type == "single"

@@ -61,9 +61,7 @@ class Client:
             "headers" not in config or "Authorization" not in config["headers"]
         ):
             config["headers"] = config.get("headers", {})
-            config["headers"].update(
-                {"Authorization": self.auth_store.token}
-            )
+            config["headers"].update({"Authorization": self.auth_store.token})
         # build url + path
         url = self.build_url(path)
         # send the request
@@ -117,16 +115,16 @@ class Client:
 
     def get_file_url(self, record: Record, filename: str, query_params: dict):
         parts = [
-            'api',
-            'files',
+            "api",
+            "files",
             quote(record.collection_id or record.collection_name),
             quote(record.id),
             quote(filename),
         ]
-        result = self.build_url('/'.join(parts))
+        result = self.build_url("/".join(parts))
         if len(query_params) != 0:
             params: str = urlencode(query_params)
-            result += '&' if '?' in result else '?'
+            result += "&" if "?" in result else "?"
             result += params
         return result
 

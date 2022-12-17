@@ -53,27 +53,24 @@ class BaseCrudService(BaseService, ABC):
     def _get_one(self, base_path: str, id: str, query_params: dict = {}) -> BaseModel:
         return self.decode(
             self.client.send(
-                f"{base_path}/{quote(id)}",
-                {
-                    "method": "GET",
-                    "params": query_params
-                }
+                f"{base_path}/{quote(id)}", {"method": "GET", "params": query_params}
             )
         )
 
     def _get_first_list_item(self, base_path: str, filter: str, query_params={}):
-        query_params.update({
-            'filter': filter,
-            '$cancelKey': 'one_by_filter_' + base_path + '_' + filter,
-        })
+        query_params.update(
+            {
+                "filter": filter,
+                "$cancelKey": "one_by_filter_" + base_path + "_" + filter,
+            }
+        )
         result = self._get_list(base_path, 1, 1, query_params)
         try:
             if len(result.items) == 0:
                 raise
         except:
             raise ClientResponseError(
-                "The requested resource wasn't found.",
-                status=404
+                "The requested resource wasn't found.", status=404
             )
 
     def _create(
@@ -98,7 +95,6 @@ class BaseCrudService(BaseService, ABC):
 
     def _delete(self, base_path: str, id: str, query_params: dict = {}) -> bool:
         self.client.send(
-            f"{base_path}/{quote(id)}", {"method": "DELETE",
-                                         "params": query_params}
+            f"{base_path}/{quote(id)}", {"method": "DELETE", "params": query_params}
         )
         return True
