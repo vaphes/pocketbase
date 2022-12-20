@@ -11,15 +11,11 @@ class Record(BaseModel):
 
     def load(self, data: dict) -> None:
         super().load(data)
+        self.expand = {}
         for key, value in data.items():
             key = camel_to_snake(key).replace("@", "")
             setattr(self, key, value)
-        self.collection_id = data.get("collectionId", "")
-        self.collection_name = data.get("collectionName", "")
-        expand = data.get("expand", {})
-        if expand:
-            self.expand = expand
-            self.load_expanded()
+        self.load_expanded()
 
     @classmethod
     def parse_expanded(cls, data: dict):
