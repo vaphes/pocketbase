@@ -31,7 +31,7 @@ class Admins(CrudService):
             self.client.auth_store.save(token, admin)
         return AdminAuthResponse(token=token, admin=admin, **response_data)
 
-    def auth_via_email(
+    def auth_with_password(
         self, email: str, password: str, body_params: dict = {}, query_params: dict = {}
     ) -> AdminAuthResponse:
         """
@@ -40,9 +40,9 @@ class Admins(CrudService):
 
         On success this method automatically updates the client's AuthStore data.
         """
-        body_params.update({"email": email, "password": password})
+        body_params.update({"identity": email, "password": password})
         response_data = self.client.send(
-            self.base_crud_path() + "/auth-via-email",
+            self.base_crud_path() + "/auth-with-password",
             {
                 "method": "POST",
                 "params": query_params,
