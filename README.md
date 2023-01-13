@@ -36,7 +36,7 @@ result = client.records.get_list(
 user_data = client.users.auth_via_email("test@example.com", "123456")
 
 # or as admin
-admin_data = client.admins.auth_via_email("test@example.com", "123456")
+admin_data = client.admins.auth_with_password("test@example.com", "123456")
 
 # and much more...
 ```
