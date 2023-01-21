@@ -1,7 +1,6 @@
-from .admins import Admins, AdminAuthResponse
-from .collections import Collections
-from .logs import Logs, HourlyStats
-from .realtime import Realtime
-from .records import Records
-from .settings import Settings
-from .users import Users, UserAuthResponse, AuthMethodsList, AuthProviderInfo
+from .admin_service import AdminService, AdminAuthResponse
+from .collection_service import CollectionService
+from .log_service import LogService, HourlyStats
+from .realtime_service import RealtimeService
+from .record_service import RecordService
+from .settings_service import SettingsService

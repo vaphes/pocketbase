@@ -5,7 +5,7 @@ import pickle
 import os
 
 from pocketbase.stores.base_auth_store import BaseAuthStore
-from pocketbase.models.user import User
+from pocketbase.models.record import Record
 from pocketbase.models.admin import Admin
 
 
@@ -18,7 +18,7 @@ class LocalAuthStore(BaseAuthStore):
         filename: str = "pocketbase_auth.data",
         filepath: str = "",
         base_token: str = "",
-        base_model: User | Admin | None = None,
+        base_model: Record | Admin | None = None,
     ) -> None:
         super().__init__(base_token, base_model)
         self.filename = filename
@@ -33,13 +33,13 @@ class LocalAuthStore(BaseAuthStore):
         return data["token"]
 
     @property
-    def model(self) -> User | Admin | None:
+    def model(self) -> Record | Admin | None:
         data = self._storage_get(self.complete_filepath)
         if not data or "model" not in data:
             return None
         return data["model"]
 
-    def save(self, token: str = "", model: User | Admin | None = None) -> None:
+    def save(self, token: str = "", model: Record | Admin | None = None) -> None:
         self._storage_set(self.complete_filepath, {"token": token, "model": model})
         super().save(token, model)
 
