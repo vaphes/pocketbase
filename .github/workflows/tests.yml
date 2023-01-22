@@ -27,7 +27,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install flake8 pytest
-          apt-get install libarchive-tools -y
+          sudo apt-get install libarchive-tools -y
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: Start a pocketbase database instance for api testing
         run: |
