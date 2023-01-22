@@ -2,7 +2,7 @@ from .connection import get_client_connection
 from pocketbase.utils import ClientResponseError
 from pocketbase.client import FileUpload
 import httpx
-from random import randbytes
+from random import getrandbits
 
 from uuid import uuid4
 import pytest
@@ -43,7 +43,7 @@ def test_crud():
     srv = client.collection(coll.id)
     # create record
     bname = uuid4().hex
-    bcontent = randbytes(1024)
+    bcontent = getrandbits(1024 * 8).to_bytes(1024, "little")
     record = srv.create(
         {
             "title": uuid4().hex,
