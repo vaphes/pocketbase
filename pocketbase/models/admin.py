@@ -1,8 +1,5 @@
 from __future__ import annotations
 
-import datetime
-
-from pocketbase.utils import to_datetime
 from pocketbase.models.utils.base_model import BaseModel
 
 

@@ -65,10 +65,7 @@ class BaseCrudService(BaseService, ABC):
             }
         )
         result = self._get_list(base_path, 1, 1, query_params)
-        try:
-            if len(result.items) == 0:
-                raise
-        except:
+        if len(result.items) == 0:
             raise ClientResponseError(
                 "The requested resource wasn't found.", status=404
             )

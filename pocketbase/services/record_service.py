@@ -92,32 +92,15 @@ class RecordService(CrudService):
         If the current `client.auth_store.model` matches with the updated id, then
         on success the `client.auth_store.model` will be updated with the result.
         """
-        item = super().update(id, body_params)  # super(Record).update
-        try:
-            if (
-                self.client.auth_store.model.collection_id is not None
-                and item.id == self.client.auth_store.model.id
-            ):
-                self.client.auth_store.save(self.client.auth_store.token, item)
-        except:
-            pass
+        item = super().update(id, body_params=body_params, query_params=query_params)
         return item
 
-    def delete(self, id: str, body_params: dict = {}, query_params: dict = {}):
+    def delete(self, id: str, query_params: dict = {}):
         """
         If the current `client.auth_store.model` matches with the deleted id,
         then on success the `client.auth_store` will be cleared.
         """
-        success = super().delete(id, body_params)  # super(Record).delete
-        try:
-            if (
-                success
-                and self.client.auth_store.model.collection_id is not None
-                and id == self.client.auth_store.model.id
-            ):
-                self.client.auth_store.clear()
-        except:
-            pass
+        success = super().delete(id, query_params=query_params)
         return success
 
     def auth_response(self, response_data: dict) -> RecordAuthResponse:
@@ -228,6 +211,40 @@ class RecordService(CrudService):
         return self.auth_response(
             self.client.send(
                 self.base_collection_path() + "/auth-refresh",
+                {"method": "POST", "params": query_params, "body": body_params},
+            )
+        )
+
+    def requestEmailChange(
+        self, newEmail: str, body_params: dict = {}, query_params: dict = {}
+    ) -> RecordAuthResponse:
+        """
+        Refreshes the current authenticated record instance and
+        returns a new token and record data.
+
+        On success this method also automatically updates the client's AuthStore.
+        """
+        body_params.update({"newEmail": newEmail})
+        return self.auth_response(
+            self.client.send(
+                self.base_collection_path() + "/request-email-change",
+                {"method": "POST", "params": query_params, "body": body_params},
+            )
+        )
+
+    def confirmEmailChange(
+        self, token: str, password: str, body_params: dict = {}, query_params: dict = {}
+    ) -> RecordAuthResponse:
+        """
+        Refreshes the current authenticated record instance and
+        returns a new token and record data.
+
+        On success this method also automatically updates the client's AuthStore.
+        """
+        body_params.update({"token": token, "password": password})
+        return self.auth_response(
+            self.client.send(
+                self.base_collection_path() + "/confirm-email-change",
                 {"method": "POST", "params": query_params, "body": body_params},
             )
         )
