@@ -31,8 +31,8 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: Start a pocketbase database instance for api testing
         run: |
-          wget -qO- https://github.com/pocketbase/pocketbase/releases/download/v0.11.3/pocketbase_0.11.3_linux_amd64.zip | bsdtar -xvf- --include pocketbase -C /usr/bin
-          chmod 755 /usr/bin/pocketbase
+          wget -qO- https://github.com/pocketbase/pocketbase/releases/download/v0.11.3/pocketbase_0.11.3_linux_amd64.zip | sudo bsdtar -xvf- --include pocketbase -C /usr/bin
+          sudo chmod 755 /usr/bin/pocketbase
           pocketbase serve --dir `mktemp -d` & 
           sleep 1 
       - name: Lint with flake8
