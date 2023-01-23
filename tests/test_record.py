@@ -14,7 +14,7 @@ class TestRecordService:
     def test_init_collection(self, client, state):
         srv = client.collections
         # create collection
-        coll = srv.create(
+        state.coll = srv.create(
             {
                 "name": uuid4().hex,
                 "type": "base",
@@ -41,12 +41,10 @@ class TestRecordService:
             }
         )
 
-        state.srv = client.collection(coll.id)
-
-    def test_create_record(self, state):
+    def test_create_record(self, client, state):
         bname = uuid4().hex
         state.bcontent = getrandbits(1024 * 8).to_bytes(1024, "little")
-        state.record = state.srv.create(
+        state.record = client.collection(state.coll.id).create(
             {
                 "title": uuid4().hex,
                 "image": FileUpload(
@@ -62,42 +60,48 @@ class TestRecordService:
         assert fn.startswith(bname)
         state.bfilename = fn
 
-    def test_get_record(self, state):
-        state.get_record = state.srv.get_one(state.record.id)
+    def test_get_record(self, client, state):
+        state.get_record = client.collection(state.coll.id).get_one(state.record.id)
         assert state.record.image == state.get_record.image
 
-    def test_update_record(self, state):
+    def test_update_record(self, client, state):
         assert state.record.title == state.get_record.title
-        state.get_record = state.srv.update(state.record.id, {"title": uuid4().hex})
+        state.get_record = client.collection(state.coll.id).update(
+            state.record.id, {"title": uuid4().hex}
+        )
         assert state.record.title != state.get_record.title
 
-    def test_remove_file_from_record(self, state):
+    def test_remove_file_from_record(self, client, state):
         assert state.record.image == state.get_record.image
         # delete some of the files from record but keep the file named "state.filename"
-        state.get_record = state.srv.update(
+        state.get_record = client.collection(state.coll.id).update(
             state.record.id, {"image": [state.bfilename]}
         )
         assert state.record.image != state.get_record.image
 
-    def test_retrieve_file(self, state):
+    def test_retrieve_file(self, client, state):
 
-        r = httpx.get(state.srv.get_file_url(state.get_record, state.bfilename))
+        r = httpx.get(
+            client.collection(state.coll.id).get_file_url(
+                state.get_record, state.bfilename
+            )
+        )
         assert r.status_code == 200
         assert r.content == state.bcontent
 
-    def test_delete_record(self, state):
-        state.srv.delete(state.record.id)
+    def test_delete_record(self, client, state):
+        client.collection(state.coll.id).delete(state.record.id)
         # deleting already deleted record should give 404
         with pytest.raises(ClientResponseError) as exc:
-            state.srv.get_one(state.record.id)
+            client.collection(state.coll.id).get_one(state.record.id)
         assert exc.value.status == 404
 
-    def test_delete_nonexisting_exception(self, state):
+    def test_delete_nonexisting_exception(self, client, state):
         with pytest.raises(ClientResponseError) as exc:
-            state.srv.delete(uuid4().hex, uuid4().hex)
+            client.collection(state.coll.id).delete(uuid4().hex, uuid4().hex)
         assert exc.value.status == 404  # delete nonexisting
 
-    def test_get_nonexisting_exception(self, state):
+    def test_get_nonexisting_exception(self, client, state):
         with pytest.raises(ClientResponseError) as exc:
-            state.srv.get_one(uuid4().hex)
+            client.collection(state.coll.id).get_one(uuid4().hex)
         assert exc.value.status == 404
