@@ -1,42 +1,54 @@
-from .connection import get_client_connection
+from .connection import client, state
+
+__all__ = ("client", "state")
 from pocketbase.models.admin import Admin
 from pocketbase.utils import ClientResponseError
-
 from uuid import uuid4
 import pytest
 
 
-def test_crud():
-    client = get_client_connection(logged_in_as_master_admin=True)
-    assert isinstance(client.auth_store.model, Admin)
-    email = "%s@%s.com" % (uuid4().hex[:16], uuid4().hex[:16])
-    password = uuid4().hex
+class TestAdminService:
+    def test_login(self, client):
+        assert isinstance(client.auth_store.model, Admin)
 
-    def record(email, password):
-        return {
-            "email": email,
-            "password": password,
-            "passwordConfirm": password,
-            "avatar": 8,
-        }
+    def test_create_admin(self, client, state):
+        state.email = "%s@%s.com" % (uuid4().hex[:16], uuid4().hex[:16])
+        state.password = uuid4().hex
+        state.admin = client.admins.create(
+            {
+                "email": state.email,
+                "password": state.password,
+                "passwordConfirm": state.password,
+                "avatar": 8,
+            }
+        )
+        # should stay logged in as previous admin
+        assert client.auth_store.model.id != state.admin.id
 
-    created_admin = client.admins.create(record(email, password))
-    # should stay logged in as previous admin
-    assert client.auth_store.model.id != created_admin.id
-    client.admins.auth_with_password(email, password)
-    # should now be logged in as new admin
-    assert client.auth_store.model.id == created_admin.id
+    def test_login_as_created_admin(self, client, state):
+        client.admins.auth_with_password(state.email, state.password)
+        assert client.auth_store.model.id == state.admin.id
 
-    new_email = "%s@%s.com" % (uuid4().hex[:16], uuid4().hex[:16])
-    new_password = uuid4().hex
-    client.admins.update(created_admin.id, record(new_email, new_password))
-    # Pocketbase will have invalidated the auth token on changing logged-in user
-    client.admins.auth_with_password(new_email, new_password)
-    client.admins.delete(created_admin.id)
+    def test_update_admin(self, client, state):
+        new_email = "%s@%s.com" % (uuid4().hex[:16], uuid4().hex[:16])
+        new_password = uuid4().hex
+        client.admins.update(
+            state.admin.id,
+            {
+                "email": new_email,
+                "password": new_password,
+                "passwordConfirm": new_password,
+                "avatar": 8,
+            },
+        )
+        # Pocketbase will have invalidated the auth token on changing logged-in user
+        client.admins.auth_with_password(new_email, new_password)
+
+    def test_delete_admin(self, client, state):
+        client.admins.delete(state.admin.id)
 
 
-def test_crud_exceptions():
-    client = get_client_connection(logged_in_as_master_admin=True)
+def test_invalid_login_exception(client):
     with pytest.raises(ClientResponseError) as exc:
         client.admins.auth_with_password(uuid4().hex, uuid4().hex)
-    assert exc.value.status == 400
+    assert exc.value.status == 400  # invalid login
