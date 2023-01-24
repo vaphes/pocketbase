@@ -1,9 +1,9 @@
 __title__ = "pocketbase"
 __description__ = "PocketBase client SDK for python."
-__version__ = "0.2.2"
+__version__ = "0.3.0"
 
 
-from .client import Client, ClientResponseError
+from .client import Client
 
 
 class PocketBase(Client):

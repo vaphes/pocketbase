@@ -3,5 +3,13 @@ from .collection import Collection
 from .external_auth import ExternalAuth
 from .log_request import LogRequest
 from .record import Record
-from .user import User
 from .file_upload import FileUpload
+
+__all__ = (
+    "Admin",
+    "Collection",
+    "ExternalAuth",
+    "LogRequest",
+    "Record",
+    "FileUpload",
+)

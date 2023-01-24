@@ -30,4 +30,4 @@ class BaseModel(ABC):
     @property
     def is_new(self) -> bool:
         """Returns whether the current loaded data represent a stored db record."""
-        return not self.id or self.id == "00000000-0000-0000-0000-000000000000"
+        return not self.id
