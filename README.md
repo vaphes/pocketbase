@@ -1,6 +1,6 @@
 # PocketBase Python SDK
 
-[![Tests](https://github.com/vaphes/pocketbase/actions/workflows/tests.yml/badge.svg)](https://github.com/vaphes/pocketbase/actions/workflows/tests.yml)
+[![Tests](https://github.com/m29h/pocketbase/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/m29h/pocketbase/actions/workflows/tests.yml)
 
 Python client SDK for the <a href="https://pocketbase.io/">PocketBase</a> backend.
 
