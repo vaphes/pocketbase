@@ -1,7 +1,6 @@
 from .connection import client, state
 
 __all__ = ("client", "state")
-from .connection import client
 from pocketbase.utils import ClientResponseError
 
 from uuid import uuid4

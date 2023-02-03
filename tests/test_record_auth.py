@@ -25,6 +25,7 @@ class TestRecordAuthService:
 
     def test_login_user(self, client, state):
         oldtoken = client.auth_store.token
+        client.auth_store.clear()
         client.collection("users").auth_with_password(state.email, state.password)
         # should now be logged in as new user
         assert isinstance(client.auth_store.model, Record)
