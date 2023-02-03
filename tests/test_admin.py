@@ -52,3 +52,10 @@ def test_invalid_login_exception(client):
     with pytest.raises(ClientResponseError) as exc:
         client.admins.auth_with_password(uuid4().hex, uuid4().hex)
     assert exc.value.status == 400  # invalid login
+
+
+def test_auth_refresh(client):
+    oldid = client.auth_store.model.id
+    ar = client.admins.authRefresh()
+    assert client.auth_store.token == ar.token
+    assert client.auth_store.model.id == oldid

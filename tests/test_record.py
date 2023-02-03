@@ -60,9 +60,33 @@ class TestRecordService:
         assert fn.startswith(bname)
         state.bfilename = fn
 
+    def test_create_multiple_record(self, client, state):
+        for _ in range(10):
+            client.collection(state.coll.id).create(
+                {
+                    "title": uuid4().hex,
+                    "image": FileUpload(
+                        (uuid4().hex, b"a.txt CONTENT", "text/plain"),
+                        (uuid4().hex, b"c.txt CONTENT", "text/plain"),
+                    ),
+                }
+            )
+
     def test_get_record(self, client, state):
         state.get_record = client.collection(state.coll.id).get_one(state.record.id)
         assert state.record.image == state.get_record.image
+
+    def test_get_list(self, client, state):
+        val = client.collection(state.coll.id).get_list()
+        assert len(val.items) > 10
+
+    def test_get_full_list(self, client, state):
+        items = client.collection(state.coll.id).get_full_list(batch=1)
+        cnt = 0
+        for i in items:
+            if i.title == state.get_record.title:
+                cnt += 1
+        assert cnt == 1
 
     def test_update_record(self, client, state):
         assert state.record.title == state.get_record.title
