@@ -12,6 +12,7 @@ __pycache__/
 
 # C extensions
 *.so
+.cov_annotate
 
 # Distribution / packaging
 .Python

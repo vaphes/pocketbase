@@ -1,10 +1,9 @@
-from .connection import client, state
+from .connection import client, state, PocketBase
 
 __all__ = ("client", "state")
 from pocketbase.models.admin import Admin
 from pocketbase.utils import ClientResponseError
 from pocketbase.stores.local_auth_store import LocalAuthStore
-from pocketbase import PocketBase
 from uuid import uuid4
 import pytest
 import tempfile

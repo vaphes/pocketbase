@@ -11,7 +11,6 @@ from pocketbase.models.record import Record
 from pocketbase.models import FileUpload
 
 from typing import Any, Dict
-from urllib.parse import quote, urlencode
 
 import httpx
 
@@ -112,21 +111,6 @@ class Client:
                 data=data,
             )
         return data
-
-    def get_file_url(self, record: Record, filename: str, query_params: dict):
-        parts = [
-            "api",
-            "files",
-            quote(record.collection_id or record.collection_name),
-            quote(record.id),
-            quote(filename),
-        ]
-        result = self.build_url("/".join(parts))
-        if len(query_params) != 0:
-            params: str = urlencode(query_params)
-            result += "&" if "?" in result else "?"
-            result += params
-        return result
 
     def build_url(self, path: str) -> str:
         url = self.base_url
