@@ -1,4 +1,4 @@
-from .connection import client, state
+from .connection import client, state, PocketBase
 
 __all__ = ("client", "state")
 from pocketbase.utils import ClientResponseError
@@ -8,7 +8,7 @@ import pytest
 
 
 class TestCollectionService:
-    def test_create(self, client, state):
+    def test_create(self, client: PocketBase, state):
         state.collection = client.collections.create(
             {
                 "name": uuid4().hex,
@@ -26,7 +26,7 @@ class TestCollectionService:
             }
         )
 
-    def test_update(self, client, state):
+    def test_update(self, client: PocketBase, state):
         client.collections.update(
             state.collection.id,
             {
@@ -48,7 +48,7 @@ class TestCollectionService:
             },
         )
 
-    def test_delete(self, client, state):
+    def test_delete(self, client: PocketBase, state):
         client.collections.delete(state.collection.id)
         with pytest.raises(ClientResponseError) as exc:
             client.collections.delete(state.collection.id, uuid4().hex)
