@@ -2,6 +2,7 @@ from .connection import client, state, PocketBase
 
 __all__ = ("client", "state")
 from pocketbase.utils import ClientResponseError
+from pocketbase.models.collection import Collection
 
 from uuid import uuid4
 import pytest
@@ -25,6 +26,10 @@ class TestCollectionService:
                 ],
             }
         )
+        assert isinstance(state.collection, Collection)
+        assert state.collection.is_base
+        assert not state.collection.is_auth
+        assert not state.collection.is_single
 
     def test_update(self, client: PocketBase, state):
         client.collections.update(

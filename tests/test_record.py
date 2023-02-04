@@ -86,8 +86,7 @@ class TestRecordService:
                         "title": uuid4().hex,
                         "rel": state.chained_records[-1],
                         "image": FileUpload(
-                            (uuid4().hex, b"a.txt CONTENT", "text/plain"),
-                            (uuid4().hex, b"c.txt CONTENT", "text/plain"),
+                            uuid4().hex, b"a.txt CONTENT", "text/plain"
                         ),
                     }
                 )

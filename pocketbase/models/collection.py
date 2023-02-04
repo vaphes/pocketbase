@@ -36,11 +36,14 @@ class Collection(BaseModel):
         for field in schema:
             self.schema.append(SchemaField(**field))
 
+    @property
     def is_base(self):
         return self.type == "base"
 
+    @property
     def is_auth(self):
         return self.type == "auth"
 
+    @property
     def is_single(self):
         return self.type == "single"
