@@ -79,13 +79,13 @@ class RecordService(CrudService):
         )
 
     def unsubscribe(self, *record_ids: List[str]):
-        """Subscribe to the realtime changes of a single record in the collection."""
+        """Unsubscribe to the realtime changes of a single record in the collection."""
         if record_ids and len(record_ids) == 0:
             subs = []
             for id in record_ids:
                 subs.append(self.collection_id_or_name + "/" + id)
             return self.client.realtime.unsubscribe(*subs)
-        return self.client.realtime.subscribe_by_prefix(self.collection_id_or_name)
+        return self.client.realtime.unsubscribe_by_prefix(self.collection_id_or_name)
 
     def update(self, id: str, body_params: dict = {}, query_params: dict = {}):
         """

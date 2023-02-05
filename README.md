@@ -48,19 +48,20 @@ result = client.collection("example").create(
 ```
 > More detailed API docs and copy-paste examples could be found in the [API documentation for each service](https://pocketbase.io/docs/api-authentication). Just remember to 'pythonize it' 🙃.
 
-Current code coverage statistics: as of Feb 04. 2023 - tested against a real pocketbase v0.12.2 instance
+Current code coverage statistics:  tested against a real pocketbase v0.12.2 instance
 ```
 # pytest --cov=pocketbase  tests/
+
 ---------- coverage: platform linux, python 3.10.9-final-0 -----------
 Name                                             Stmts   Miss  Cover
 --------------------------------------------------------------------
 pocketbase/__init__.py                               6      0   100%
-pocketbase/client.py                                79      0   100%
+pocketbase/client.py                                78      0   100%
 pocketbase/models/__init__.py                        7      0   100%
 pocketbase/models/admin.py                           9      0   100%
-pocketbase/models/collection.py                     35      3    91%
+pocketbase/models/collection.py                     38      0   100%
 pocketbase/models/external_auth.py                  13      5    62%
-pocketbase/models/file_upload.py                    10      1    90%
+pocketbase/models/file_upload.py                    10      0   100%
 pocketbase/models/log_request.py                    23      0   100%
 pocketbase/models/record.py                         20      0   100%
 pocketbase/models/utils/__init__.py                  4      0   100%
@@ -71,20 +72,20 @@ pocketbase/services/__init__.py                      7      0   100%
 pocketbase/services/admin_service.py                42      6    86%
 pocketbase/services/collection_service.py           12      2    83%
 pocketbase/services/log_service.py                  27      0   100%
-pocketbase/services/realtime_service.py             87     57    34%
-pocketbase/services/record_service.py              104     26    75%
-pocketbase/services/settings_service.py             13      6    54%
+pocketbase/services/realtime_service.py             88      8    91%
+pocketbase/services/record_service.py              104     22    79%
+pocketbase/services/settings_service.py             13      2    85%
 pocketbase/services/utils/__init__.py                4      0   100%
 pocketbase/services/utils/base_crud_service.py      37      0   100%
 pocketbase/services/utils/base_service.py            7      0   100%
 pocketbase/services/utils/crud_service.py           19      0   100%
-pocketbase/services/utils/sse.py                    82     58    29%
+pocketbase/services/utils/sse.py                    75      1    99%
 pocketbase/stores/__init__.py                        3      0   100%
 pocketbase/stores/base_auth_store.py                23      0   100%
 pocketbase/stores/local_auth_store.py               46      0   100%
 pocketbase/utils.py                                 26      0   100%
 --------------------------------------------------------------------
-TOTAL                                              788    164    79%
+TOTAL                                              784     46    94%
 ```
 
 <p align="center"><i>The PocketBase Python SDK is <a href="https://github.com/m29h/pocketbase/blob/master/LICENCE.txt">MIT licensed</a> code.</p>

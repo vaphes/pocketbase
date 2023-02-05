@@ -74,7 +74,8 @@ class RealtimeService(BaseService):
         else:
             # remove each passed subscription
             found = False
-            for sub in self.subscriptions:
+            sub_keys = list(self.subscriptions.keys())
+            for sub in sub_keys:
                 found = True
                 self.event_source.remove_event_listener(sub, self.subscriptions[sub])
                 self.subscriptions.pop(sub)

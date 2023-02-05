@@ -56,8 +56,6 @@ class EventLoop(threading.Thread):
                     if data.endswith((b"\r\r", b"\n\n", b"\r\n\r\n")):
                         yield data
                         data = b""
-            if data:
-                yield data
 
     def _events(self):
         for chunk in self._read():
@@ -68,25 +66,18 @@ class EventLoop(threading.Thread):
                     continue
                 data = line.split(self.FIELD_SEPARATOR, 1)
                 field = data[0]
-                if field not in event.__dict__:
-                    continue
+                value = ""
                 if len(data) > 1:
-                    if data[1].startswith(" "):
-                        value = data[1][1:]
-                    else:
-                        value = data[1]
-                else:
-                    value = ""
+                    value = data[1].strip()
                 if field == "data":
                     event.data += value + "\n"
                 else:
                     setattr(event, field, value)
-            if not event.data:
-                continue
-            if event.data.endswith("\n"):
-                event.data = event.data[0:-1]
-            event.event = event.event or "message"
-            yield event
+            if event.data:
+                if event.data.endswith("\n"):
+                    event.data = event.data[0:-1]
+                event.event = event.event or "message"
+                yield event
 
     def run(self):
         for event in self._events():
