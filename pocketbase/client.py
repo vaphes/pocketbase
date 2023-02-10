@@ -68,12 +68,9 @@ class Client:
         if self.auth_store.token and (
             "headers" not in config or "Authorization" not in config["headers"]
         ):
-            auth_type = "Admin"
-            if hasattr(self.auth_store.model, "verified"):
-                auth_type = "User"
             config["headers"] = config.get("headers", {})
             config["headers"].update(
-                {"Authorization": f"{auth_type} {self.auth_store.token}"}
+                {"Authorization": self.auth_store.token}
             )
         # build url + path
         url = self.build_url(path)
