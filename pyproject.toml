@@ -5,6 +5,7 @@ requires-python = ">=3.7"
 license = "MIT"
 authors = [
     { name = "Vithor Jaeger", email = "vaphes@gmail.com" },
+    { name = "Max Amling", email = "max-amling@web.de" },
 ]
 classifiers = [
     "Programming Language :: Python :: 3",
