@@ -10,10 +10,10 @@ This is in early development, and at first is just a translation of <a href="htt
 
 ## Installation
 
-Install PocketBase using pip:
+Install PocketBase using PIP:
 
 ```shell
-$ pip install pocketbase
+python3 -m pip install pocketbase
 ```
 
 ## Usage
@@ -48,5 +48,39 @@ result = client.collection("example").create(
 ```
 > More detailed API docs and copy-paste examples could be found in the [API documentation for each service](https://pocketbase.io/docs/api-authentication). Just remember to 'pythonize it' 🙃.
 
+## Development
 
-<p align="center"><i>The PocketBase Python SDK is <a href="https://github.com/vaphes/pocketbase/blob/master/LICENCE.txt">MIT licensed</a> code.</p>
+These are the requirements for local development:
+
+* Python 3.7+
+* Poetry (https://python-poetry.org/)
+
+You can install locally:
+
+```shell
+poetry install
+```
+
+Or can build and generate a package:
+
+```shell
+poetry build
+```
+
+But if you are using only PIP, use this command:
+
+```shell
+python3 -m pip install -e .
+```
+
+## Tests
+
+To execute the tests use this command:
+
+```
+poetry run pytest
+```
+
+## License
+
+The PocketBase Python SDK is <a href="https://github.com/vaphes/pocketbase/blob/master/LICENCE.txt">MIT licensed</a> code.
