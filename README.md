@@ -10,7 +10,7 @@ This is in early development, and at first is just a translation of <a href="htt
 
 ## Installation
 
-Install PocketBase using pip:
+Install PocketBase using PIP:
 
 ```shell
 python3 -m pip install pocketbase
@@ -67,7 +67,7 @@ Or can build and generate a package:
 poetry build
 ```
 
-And if you using only PIP, use this command:
+But if you are using only PIP, use this command:
 
 ```shell
 python3 -m pip install -e .
