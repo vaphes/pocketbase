@@ -74,14 +74,16 @@ class RecordService(CrudService):
 
     def subscribeOne(self, record_id: str, callback: Callable[[MessageData], None]):
         """Subscribe to the realtime changes of a single record in the collection."""
-        return self.client.realtime.subscribe(self.collection_id_or_name + '/' + record_id, callback)
+        return self.client.realtime.subscribe(
+            self.collection_id_or_name + "/" + record_id, callback
+        )
 
     def unsubscribe(self, *record_ids: List[str]):
         """Subscribe to the realtime changes of a single record in the collection."""
         if record_ids and len(record_ids) == 0:
             subs = []
             for id in record_ids:
-                subs.append(self.collection_id_or_name + '/' + id)
+                subs.append(self.collection_id_or_name + "/" + id)
             return self.client.realtime.unsubscribe(*subs)
         return self.client.realtime.subscribe_by_prefix(self.collection_id_or_name)
 
@@ -92,7 +94,10 @@ class RecordService(CrudService):
         """
         item = super().update(id, body_params)  # super(Record).update
         try:
-            if self.client.auth_store.model.collection_id is not None and item.id == self.client.auth_store.model.id:
+            if (
+                self.client.auth_store.model.collection_id is not None
+                and item.id == self.client.auth_store.model.id
+            ):
                 self.client.auth_store.save(self.client.auth_store.token, item)
         except:
             pass
@@ -105,7 +110,11 @@ class RecordService(CrudService):
         """
         success = super().delete(id, body_params)  # super(Record).delete
         try:
-            if success and self.client.auth_store.model.collection_id is not None and id == self.client.auth_store.model.id:
+            if (
+                success
+                and self.client.auth_store.model.collection_id is not None
+                and id == self.client.auth_store.model.id
+            ):
                 self.client.auth_store.clear()
         except:
             pass
@@ -129,18 +138,25 @@ class RecordService(CrudService):
         email_password = response_data.pop("emailPassword", False)
 
         def apply_pythonic_keys(ap):
-            pythonic_keys_ap = {camel_to_snake(key).replace(
-                "@", ""): value for key, value in ap.items()}
+            pythonic_keys_ap = {
+                camel_to_snake(key).replace("@", ""): value for key, value in ap.items()
+            }
             return pythonic_keys_ap
 
         auth_providers = [
             AuthProviderInfo(**auth_provider)
-            for auth_provider in map(apply_pythonic_keys, response_data.get("authProviders", []))
+            for auth_provider in map(
+                apply_pythonic_keys, response_data.get("authProviders", [])
+            )
         ]
         return AuthMethodsList(username_password, email_password, auth_providers)
 
     def auth_with_password(
-        self, username_or_email: str, password: str, body_params: dict = {}, query_params: dict = {}
+        self,
+        username_or_email: str,
+        password: str,
+        body_params: dict = {},
+        query_params: dict = {},
     ) -> RecordAuthResponse:
         """
         Authenticate a single auth collection record via its username/email and password.
@@ -150,8 +166,7 @@ class RecordService(CrudService):
         - the authentication token
         - the authenticated record model
         """
-        body_params.update(
-            {"identity": username_or_email, "password": password})
+        body_params.update({"identity": username_or_email, "password": password})
         response_data = self.client.send(
             self.base_collection_path() + "/auth-with-password",
             {
@@ -182,13 +197,15 @@ class RecordService(CrudService):
         - the authenticated record model
         - the OAuth2 account data (eg. name, email, avatar, etc.)
         """
-        body_params.update({
-            'provider': provider,
-            'code': code,
-            'codeVerifier': code_verifier,
-            'redirectUrl': redirct_url,
-            'createData': create_data,
-        })
+        body_params.update(
+            {
+                "provider": provider,
+                "code": code,
+                "codeVerifier": code_verifier,
+                "redirectUrl": redirct_url,
+                "createData": create_data,
+            }
+        )
         response_data = self.client.send(
             self.base_collection_path() + "/auth-with-password",
             {
@@ -211,11 +228,7 @@ class RecordService(CrudService):
         return self.auth_response(
             self.client.send(
                 self.base_collection_path() + "/auth-refresh",
-                {
-                    "method": "POST",
-                    "params": query_params,
-                    "body": body_params
-                },
+                {"method": "POST", "params": query_params, "body": body_params},
             )
         )
 
