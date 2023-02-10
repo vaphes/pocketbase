@@ -75,6 +75,8 @@ python3 -m pip install -e .
 
 ## Tests
 
+To execute the tests use this command:
+
 ```
 poetry run pytest
 ```
