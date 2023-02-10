@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Callable
+from typing import Callable, List
 import dataclasses
 import json
 
@@ -15,7 +15,7 @@ class MessageData:
     record: Record
 
 
-class Realtime(BaseService):
+class RealtimeService(BaseService):
     subscriptions: dict
     client_id: str = ""
     event_source: SSEClient | None = None
@@ -40,28 +40,53 @@ class Realtime(BaseService):
         elif self.client_id:
             self._submit_subscriptions()
 
-    def unsubscribe(self, subscription: str | None = None) -> None:
+    def unsubscribe_by_prefix(self, subscription_prefix: str):
+        """
+        Unsubscribe from all subscriptions starting with the provided prefix.
+
+        This method is no-op if there are no active subscriptions with the provided prefix.
+
+        The related sse connection will be autoclosed if after the
+        unsubscribe operation there are no active subscriptions left.
+        """
+        to_unsubscribe = []
+        for sub in self.subscriptions:
+            if sub.startswith(subscription_prefix):
+                to_unsubscribe.append(sub)
+        if len(to_unsubscribe) == 0:
+            return
+        return self.unsubscribe(*to_unsubscribe)
+
+    def unsubscribe(self, subscriptions: List[str] | None = None) -> None:
         """
         Unsubscribe from a subscription.
 
-        If the `subscription` argument is not set,
+        If the `subscriptions` argument is not set,
         then the client will unsubscribe from all registered subscriptions.
 
         The related sse connection will be autoclosed if after the
         unsubscribe operations there are no active subscriptions left.
         """
-        if not subscription:
+        if not subscriptions or len(subscriptions) == 0:
+            # remove all subscriptions
             self._remove_subscription_listeners()
             self.subscriptions = {}
-        elif subscription in self.subscriptions:
-            self.event_source.remove_event_listener(
-                subscription, self.subscriptions[subscription]
-            )
-            self.subscriptions.pop(subscription)
         else:
-            return
+            # remove each passed subscription
+            found = False
+            for sub in self.subscriptions:
+                found = True
+                self.event_source.remove_event_listener(
+                    sub, self.subscriptions[sub]
+                )
+                self.subscriptions.pop(sub)
+            if not found:
+                return
+
         if self.client_id:
             self._submit_subscriptions()
+
+        # no more subscriptions -> close the sse connection
         if not self.subscriptions:
             self._disconnect()
 
@@ -116,13 +141,15 @@ class Realtime(BaseService):
     def _connect(self) -> None:
         self._disconnect()
         self.event_source = SSEClient(self.client.build_url("/api/realtime"))
-        self.event_source.add_event_listener("PB_CONNECT", self._connect_handler)
+        self.event_source.add_event_listener(
+            "PB_CONNECT", self._connect_handler)
 
     def _disconnect(self) -> None:
         self._remove_subscription_listeners()
         self.client_id = ""
         if not self.event_source:
             return
-        self.event_source.remove_event_listener("PB_CONNECT", self._connect_handler)
+        self.event_source.remove_event_listener(
+            "PB_CONNECT", self._connect_handler)
         self.event_source.close()
         self.event_source = None
