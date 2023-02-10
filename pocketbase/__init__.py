@@ -3,7 +3,7 @@ __description__ = "PocketBase client SDK for python."
 __version__ = "0.8.0"
 
 
-from .client import Client, ClientResponseError
+from .client import Client
 
 
 class PocketBase(Client):
