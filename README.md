@@ -67,6 +67,12 @@ Or can build and generate a package:
 poetry build
 ```
 
+And if you using only PIP, use this command:
+
+```shell
+python3 -m pip install -e .
+```
+
 ## Tests
 
 ```
