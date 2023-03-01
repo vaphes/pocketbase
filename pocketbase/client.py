@@ -35,10 +35,12 @@ class Client:
         base_url: str = "/",
         lang: str = "en-US",
         auth_store: BaseAuthStore | None = None,
+        timeout: float = 120,
     ) -> None:
         self.base_url = base_url
         self.lang = lang
         self.auth_store = auth_store or BaseAuthStore()  # LocalAuthStore()
+        self.timeout = timeout
         # services
         self.admins = AdminService(self)
         self.collections = CollectionService(self)
@@ -94,7 +96,7 @@ class Client:
                 json=body,
                 data=data,
                 files=files,
-                timeout=120,
+                timeout=self.timeout,
             )
         except Exception as e:
             raise ClientResponseError(
