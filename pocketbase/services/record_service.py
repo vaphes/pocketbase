@@ -207,7 +207,7 @@ class RecordService(CrudService):
             }
         )
         response_data = self.client.send(
-            self.base_collection_path() + "/auth-with-password",
+            self.base_collection_path() + "/auth-with-oauth2",
             {
                 "method": "POST",
                 "params": query_params,
