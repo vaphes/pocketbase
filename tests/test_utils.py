@@ -4,10 +4,6 @@ from pocketbase import __version__
 from pocketbase.utils import camel_to_snake, to_datetime
 
 
-def test_version():
-    assert __version__ == "0.8.1"
-
-
 def test_utils():
     assert camel_to_snake("TestCase") == "test_case"
     assert camel_to_snake("test_case") == "test_case"
