@@ -36,11 +36,13 @@ class Client:
         lang: str = "en-US",
         auth_store: BaseAuthStore | None = None,
         timeout: float = 120,
+        http_client: httpx.Client | None = None,
     ) -> None:
         self.base_url = base_url
         self.lang = lang
         self.auth_store = auth_store or BaseAuthStore()  # LocalAuthStore()
         self.timeout = timeout
+        self.http_client = http_client or httpx.Client()
         # services
         self.admins = AdminService(self)
         self.collections = CollectionService(self)
@@ -88,7 +90,7 @@ class Client:
             files = None
             data = None
         try:
-            response = httpx.request(
+            response = self.http_client.request(
                 method=method,
                 url=url,
                 params=params,
