@@ -1,0 +1,4 @@
+#!/bin/bash
+if [[ -n "${TMP_EMAIL_DIR}" ]]; then
+cat - > ${TMP_EMAIL_DIR}/${1}
+fi
