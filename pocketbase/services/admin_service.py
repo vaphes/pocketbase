@@ -122,7 +122,7 @@ class AdminService(CrudService):
         password_confirm: str,
         body_params: dict = {},
         query_params: dict = {},
-    ) -> AdminAuthResponse:
+    ) -> bool:
         """Confirms admin password reset request."""
         body_params.update(
             {
@@ -131,13 +131,12 @@ class AdminService(CrudService):
                 "passwordConfirm": password_confirm,
             }
         )
-        return self.auth_response(
-            self.client.send(
-                self.base_crud_path() + "/confirm-password-reset",
-                {
-                    "method": "POST",
-                    "params": query_params,
-                    "body": body_params,
-                },
-            )
+        self.client.send(
+            self.base_crud_path() + "/confirm-password-reset",
+            {
+                "method": "POST",
+                "params": query_params,
+                "body": body_params,
+            },
         )
+        return True
