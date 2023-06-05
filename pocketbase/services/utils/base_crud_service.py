@@ -72,6 +72,7 @@ class BaseCrudService(BaseService, ABC):
             raise ClientResponseError(
                 "The requested resource wasn't found.", status=404
             )
+        return result.items[0]
 
     def _create(
         self, base_path: str, body_params: dict = {}, query_params: dict = {}
