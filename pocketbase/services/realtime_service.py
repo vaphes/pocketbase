@@ -55,7 +55,7 @@ class RealtimeService(BaseService):
                 to_unsubscribe.append(sub)
         if len(to_unsubscribe) == 0:
             return
-        return self.unsubscribe(*to_unsubscribe)
+        return self.unsubscribe(to_unsubscribe)
 
     def unsubscribe(self, subscriptions: List[str] | None = None) -> None:
         """
@@ -74,10 +74,13 @@ class RealtimeService(BaseService):
         else:
             # remove each passed subscription
             found = False
-            for sub in self.subscriptions:
-                found = True
-                self.event_source.remove_event_listener(sub, self.subscriptions[sub])
-                self.subscriptions.pop(sub)
+            for sub in subscriptions:
+                if sub in self.subscriptions:
+                    found = True
+                    self.event_source.remove_event_listener(
+                        sub, self.subscriptions[sub]
+                    )
+                    self.subscriptions.pop(sub)
             if not found:
                 return
 
