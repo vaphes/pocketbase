@@ -21,7 +21,7 @@ class CrudService(BaseCrudService, ABC):
     ) -> ListResult:
         return self._get_list(self.base_crud_path(), page, per_page, query_params)
 
-    def get_first_list_item(self, filter: str, query_params):
+    def get_first_list_item(self, filter: str, query_params={}):
         """
         Returns the first found item by the specified filter.
 
