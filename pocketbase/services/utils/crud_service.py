@@ -21,7 +21,7 @@ class CrudService(BaseCrudService, ABC):
     ) -> ListResult:
         return self._get_list(self.base_crud_path(), page, per_page, query_params)
 
-    def _get_first_list_item(self, base_path: str, filter: str, query_params):
+    def get_first_list_item(self, filter: str, query_params={}):
         """
         Returns the first found item by the specified filter.
 
@@ -31,7 +31,7 @@ class CrudService(BaseCrudService, ABC):
         For consistency with `getOne`, this method will throw a 404
         ClientResponseError if no item was found.
         """
-        return self._get_first_list_item(base_path, filter, query_params)
+        return self._get_first_list_item(self.base_crud_path(), filter, query_params)
 
     def get_one(self, id: str, query_params: dict = {}) -> BaseModel:
         """
