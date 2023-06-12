@@ -247,6 +247,21 @@ class RecordService(CrudService):
         )
         return True
 
+    def requestVerification(
+        self, email: str, body_params: dict = {}, query_params: dict = {}
+    ) -> bool:
+        """Sends email verification request."""
+        body_params.update({"email": email})
+        self.client.send(
+            self.base_collection_path() + "/request-verification",
+            {
+                "method": "POST",
+                "params": query_params,
+                "body": body_params,
+            },
+        )
+        return True
+
     def confirmPasswordReset(
         self,
         password_reset_token: str,
@@ -273,3 +288,18 @@ class RecordService(CrudService):
                 },
             )
         )
+
+    def confirmVerification(
+            self, token: str, body_params: dict = {}, query_params: dict = {}
+    ) -> bool:
+        """Confirms email verification request."""
+        body_params.update({"token": token})
+        self.client.send(
+            self.base_collection_path() + "/confirm-verification",
+            {
+                "method": "POST",
+                "params": query_params,
+                "body": body_params,
+            },
+        )
+        return True
