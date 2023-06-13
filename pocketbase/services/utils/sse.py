@@ -56,8 +56,6 @@ class EventLoop(threading.Thread):
                     if data.endswith((b"\r\r", b"\n\n", b"\r\n\r\n")):
                         yield data
                         data = b""
-            if data:
-                yield data
 
     def _events(self):
         for chunk in self._read():
@@ -89,11 +87,15 @@ class EventLoop(threading.Thread):
             yield event
 
     def run(self):
-        for event in self._events():
-            if self.kill:
-                break
-            if event.event in self.listeners:
-                self.listeners[event.event](event)
+        while not self.kill:
+            try:
+                for event in self._events():
+                    if self.kill:
+                        break
+                    if event.event in self.listeners:
+                        self.listeners[event.event](event)
+            except:
+                self.kill = True
 
 
 class SSEClient:
