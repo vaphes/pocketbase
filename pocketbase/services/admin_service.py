@@ -23,12 +23,12 @@ class AdminService(CrudService):
     def base_crud_path(self) -> str:
         return "/api/admins"
 
-    def update(self, id: str, body_params: dict, query_params: dict) -> BaseModel:
+    def update(self, id: str, body_params: dict, query_params={}) -> BaseModel:
         """
         If the current `client.auth_store.model` matches with the updated id,
         then on success the `client.auth_store.model` will be updated with the result.
         """
-        item = super(AdminService).update(id, body_params)
+        item = super().update(id, body_params=body_params, query_params=query_params)
         try:
             if (
                 self.client.auth_store.model.collection_id is not None
@@ -39,12 +39,12 @@ class AdminService(CrudService):
             pass
         return item
 
-    def delete(self, id: str, body_params: dict, query_params: dict) -> BaseModel:
+    def delete(self, id: str, query_params={}) -> BaseModel:
         """
         If the current `client.auth_store.model` matches with the deleted id,
         then on success the `client.auth_store` will be cleared.
         """
-        item = super(AdminService).delete(id, body_params)
+        item = super().delete(id, query_params=query_params)
         try:
             if (
                 self.client.auth_store.model.collection_id is not None

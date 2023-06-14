@@ -92,7 +92,7 @@ class RecordService(CrudService):
         If the current `client.auth_store.model` matches with the updated id, then
         on success the `client.auth_store.model` will be updated with the result.
         """
-        item = super().update(id, body_params)  # super(Record).update
+        item = super().update(id, body_params=body_params, query_params=query_params)
         try:
             if (
                 self.client.auth_store.model.collection_id is not None
@@ -103,12 +103,12 @@ class RecordService(CrudService):
             pass
         return item
 
-    def delete(self, id: str, body_params: dict = {}, query_params: dict = {}):
+    def delete(self, id: str, query_params: dict = {}):
         """
         If the current `client.auth_store.model` matches with the deleted id,
         then on success the `client.auth_store` will be cleared.
         """
-        success = super().delete(id, body_params)  # super(Record).delete
+        success = super().delete(id, query_params)
         try:
             if (
                 success
