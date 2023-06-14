@@ -232,6 +232,33 @@ class RecordService(CrudService):
             )
         )
 
+    def requestEmailChange(
+        self, newEmail: str, body_params: dict = {}, query_params: dict = {}
+    ) -> bool:
+        """
+        Asks to change email of the current authenticated record instance the new address
+        receives an email with a confirmation token that needs to be confirmed with confirmEmailChange()
+        """
+        body_params.update({"newEmail": newEmail})
+        self.client.send(
+            self.base_collection_path() + "/request-email-change",
+            {"method": "POST", "params": query_params, "body": body_params},
+        )
+        return True
+
+    def confirmEmailChange(
+        self, token: str, password: str, body_params: dict = {}, query_params: dict = {}
+    ) -> bool:
+        """
+        Confirms Email Change by with the confirmation token and confirm with users password
+        """
+        body_params.update({"token": token, "password": password})
+        self.client.send(
+            self.base_collection_path() + "/confirm-email-change",
+            {"method": "POST", "params": query_params, "body": body_params},
+        )
+        return True
+
     def requestPasswordReset(
         self, email: str, body_params: dict = {}, query_params: dict = {}
     ) -> bool:
@@ -269,8 +296,8 @@ class RecordService(CrudService):
         password_confirm: str,
         body_params: dict = {},
         query_params: dict = {},
-    ) -> RecordAuthResponse:
-        """Confirms auth record password reset reque"""
+    ) -> bool:
+        """Confirms auth record password reset request"""
         body_params.update(
             {
                 "token": password_reset_token,
@@ -278,19 +305,19 @@ class RecordService(CrudService):
                 "passwordConfirm": password_confirm,
             }
         )
-        return self.auth_response(
-            self.client.send(
-                self.base_collection_path() + "/confirm-password-reset",
-                {
-                    "method": "POST",
-                    "params": query_params,
-                    "body": body_params,
-                },
-            )
+
+        self.client.send(
+            self.base_collection_path() + "/confirm-password-reset",
+            {
+                "method": "POST",
+                "params": query_params,
+                "body": body_params,
+            },
         )
+        return True
 
     def confirmVerification(
-            self, token: str, body_params: dict = {}, query_params: dict = {}
+        self, token: str, body_params: dict = {}, query_params: dict = {}
     ) -> bool:
         """Confirms email verification request."""
         body_params.update({"token": token})
