@@ -52,9 +52,12 @@ class LocalAuthStore(BaseAuthStore):
             pickle.dump(value, f)
 
     def _storage_get(self, key: str) -> Any:
-        with open(key, "rb") as f:
-            value = pickle.load(f)
-        return value
+        try:
+            with open(key, "rb") as f:
+                value = pickle.load(f)
+            return value
+        except FileNotFoundError:
+            return {}
 
     def _storage_remove(self, key: str) -> None:
         if os.path.exists(key):
