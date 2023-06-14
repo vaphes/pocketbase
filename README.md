@@ -1,8 +1,7 @@
 # PocketBase Python SDK
 
 [![Tests](https://github.com/vaphes/pocketbase/actions/workflows/tests.yml/badge.svg)](https://github.com/vaphes/pocketbase/actions/workflows/tests.yml)
-[![Coverage Status](https://camo.githubusercontent.com/90620b32b49a3c65b1f41069688c57ef2b6f6191011df7ef153b9ccaecdaabf2/68747470733a2f2f636f766572616c6c732e696f2f7265706f732f6769746875622f6d3239682f706f636b6574626173652f62616467652e7376673f6272616e63683d6d6173746572)](https://coveralls.io/github/vaphes/pocketbase?branch=master)
-
+[![Coverage Status](https://coveralls.io/repos/github/vaphes/pocketbase/badge.svg?branch=master)](https://coveralls.io/github/vaphes/pocketbase?branch=master)
 Python client SDK for the <a href="https://pocketbase.io/">PocketBase</a> backend.
 
 This is in early development, and at first is just a translation of <a href="https://github.com/pocketbase/js-sdk">the javascript lib</a> using <a href="https://github.com/encode/httpx/">HTTPX</a>.
