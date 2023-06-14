@@ -2,6 +2,7 @@
 
 [![Tests](https://github.com/vaphes/pocketbase/actions/workflows/tests.yml/badge.svg)](https://github.com/vaphes/pocketbase/actions/workflows/tests.yml)
 [![Coverage Status](https://coveralls.io/repos/github/vaphes/pocketbase/badge.svg?branch=master)](https://coveralls.io/github/vaphes/pocketbase?branch=master)
+
 Python client SDK for the <a href="https://pocketbase.io/">PocketBase</a> backend.
 
 This is in early development, and at first is just a translation of <a href="https://github.com/pocketbase/js-sdk">the javascript lib</a> using <a href="https://github.com/encode/httpx/">HTTPX</a>.
