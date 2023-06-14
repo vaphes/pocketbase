@@ -9,6 +9,6 @@ class FileUpload:
         self.files: FileUploadTypes = args
 
     def get(self, key: str):
-        if isinstance(self.files[0], Sequence):
+        if isinstance(self.files[0], Sequence) and not isinstance(self.files[0], str):
             return tuple((key, i) for i in self.files)
         return ((key, self.files),)
