@@ -94,7 +94,7 @@ class EventLoop(threading.Thread):
                         break
                     if event.event in self.listeners:
                         self.listeners[event.event](event)
-            except:
+            except Exception:
                 self.kill = True
 
 

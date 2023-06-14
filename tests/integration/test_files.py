@@ -1,11 +1,8 @@
 from pocketbase import PocketBase
-from pocketbase.utils import ClientResponseError
 from pocketbase.client import FileUpload
 import httpx
 from random import getrandbits
-
 from uuid import uuid4
-import pytest
 
 
 class TestFileService:

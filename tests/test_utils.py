@@ -1,6 +1,5 @@
 import datetime
 
-from pocketbase import __version__
 from pocketbase.utils import camel_to_snake, to_datetime
 
 
