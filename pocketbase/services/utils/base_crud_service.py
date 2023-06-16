@@ -16,7 +16,6 @@ class BaseCrudService(BaseService, ABC):
     def _get_full_list(
         self, base_path: str, batch_size: int = 100, query_params: dict = {}
     ) -> list[BaseModel]:
-
         result: list[BaseModel] = []
 
         def request(result: list[BaseModel], page: int) -> list:
@@ -65,10 +64,7 @@ class BaseCrudService(BaseService, ABC):
             }
         )
         result = self._get_list(base_path, 1, 1, query_params)
-        try:
-            if len(result.items) == 0:
-                raise
-        except:
+        if not result.items:
             raise ClientResponseError(
                 "The requested resource wasn't found.", status=404
             )

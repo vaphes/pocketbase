@@ -1,9 +1,5 @@
 from pocketbase import PocketBase
 from pocketbase.utils import ClientResponseError
-from pocketbase.client import FileUpload
-import httpx
-from random import getrandbits
-
 from uuid import uuid4
 import pytest
 
@@ -89,7 +85,7 @@ class TestRecordService:
         )
         i = 0
         for r in rel:
-            while r != None:
+            while r is not None:
                 if hasattr(r, "expand"):
                     if "rel" in r.expand:
                         i += 1
