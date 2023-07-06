@@ -50,11 +50,11 @@ class RecordService(CrudService):
         return Record(data)
 
     def base_crud_path(self) -> str:
-        return self.base_collection_path() + "/records"
+        return f"{self.base_collection_path()}/records"
 
     def base_collection_path(self) -> str:
         """Returns the current collection service base path."""
-        return "/api/collections/" + quote(self.collection_id_or_name)
+        return f"/api/collections/{quote(self.collection_id_or_name)}"
 
     def get_file_url(
         self, record: Record, filename: str, query_params: dict = {}
@@ -65,7 +65,7 @@ class RecordService(CrudService):
             base_url = base_url[:-1]
         result = f"{base_url}/api/files/{record.collection_id}/{record.id}/{filename}"
         if query_params:
-            result += "?" + urlencode(query_params)
+            result += f"?{urlencode(query_params)}"
         return result
 
     def subscribe(self, callback: Callable[[MessageData], None]):
@@ -75,15 +75,13 @@ class RecordService(CrudService):
     def subscribeOne(self, record_id: str, callback: Callable[[MessageData], None]):
         """Subscribe to the realtime changes of a single record in the collection."""
         return self.client.realtime.subscribe(
-            self.collection_id_or_name + "/" + record_id, callback
+            f"{self.collection_id_or_name}/{record_id}", callback
         )
 
     def unsubscribe(self, *record_ids: List[str]):
         """Unsubscribe to the realtime changes of a single record in the collection."""
-        if record_ids and len(record_ids) > 0:
-            subs = []
-            for id in record_ids:
-                subs.append(self.collection_id_or_name + "/" + id)
+        if record_ids:
+            subs = [f"{self.collection_id_or_name}/{id}" for id in record_ids]
             return self.client.realtime.unsubscribe(subs)
         return self.client.realtime.unsubscribe_by_prefix(self.collection_id_or_name)
 
@@ -131,7 +129,7 @@ class RecordService(CrudService):
     def list_auth_methods(self, query_params: str = {}):
         """Returns all available collection auth methods."""
         response_data = self.client.send(
-            self.base_collection_path() + "/auth-methods",
+            f"{self.base_collection_path()}/auth-methods",
             {"method": "GET", "params": query_params},
         )
         username_password = response_data.pop("usernamePassword", False)
@@ -166,9 +164,9 @@ class RecordService(CrudService):
         - the authentication token
         - the authenticated record model
         """
-        body_params.update({"identity": username_or_email, "password": password})
+        body_params |= {"identity": username_or_email, "password": password}
         response_data = self.client.send(
-            self.base_collection_path() + "/auth-with-password",
+            f"{self.base_collection_path()}/auth-with-password",
             {
                 "method": "POST",
                 "params": query_params,
@@ -207,7 +205,7 @@ class RecordService(CrudService):
             }
         )
         response_data = self.client.send(
-            self.base_collection_path() + "/auth-with-oauth2",
+            f"{self.base_collection_path()}/auth-with-oauth2",
             {
                 "method": "POST",
                 "params": query_params,
@@ -227,7 +225,7 @@ class RecordService(CrudService):
         """
         return self.auth_response(
             self.client.send(
-                self.base_collection_path() + "/auth-refresh",
+                f"{self.base_collection_path()}/auth-refresh",
                 {"method": "POST", "params": query_params, "body": body_params},
             )
         )
@@ -239,9 +237,9 @@ class RecordService(CrudService):
         Asks to change email of the current authenticated record instance the new address
         receives an email with a confirmation token that needs to be confirmed with confirmEmailChange()
         """
-        body_params.update({"newEmail": newEmail})
+        body_params["newEmail"] = newEmail
         self.client.send(
-            self.base_collection_path() + "/request-email-change",
+            f"{self.base_collection_path()}/request-email-change",
             {"method": "POST", "params": query_params, "body": body_params},
         )
         return True
@@ -252,9 +250,9 @@ class RecordService(CrudService):
         """
         Confirms Email Change by with the confirmation token and confirm with users password
         """
-        body_params.update({"token": token, "password": password})
+        body_params |= {"token": token, "password": password}
         self.client.send(
-            self.base_collection_path() + "/confirm-email-change",
+            f"{self.base_collection_path()}/confirm-email-change",
             {"method": "POST", "params": query_params, "body": body_params},
         )
         return True
@@ -263,9 +261,9 @@ class RecordService(CrudService):
         self, email: str, body_params: dict = {}, query_params: dict = {}
     ) -> bool:
         """Sends auth record password reset request."""
-        body_params.update({"email": email})
+        body_params["email"] = email
         self.client.send(
-            self.base_collection_path() + "/request-password-reset",
+            f"{self.base_collection_path()}/request-password-reset",
             {
                 "method": "POST",
                 "params": query_params,
@@ -278,9 +276,9 @@ class RecordService(CrudService):
         self, email: str, body_params: dict = {}, query_params: dict = {}
     ) -> bool:
         """Sends email verification request."""
-        body_params.update({"email": email})
+        body_params["email"] = email
         self.client.send(
-            self.base_collection_path() + "/request-verification",
+            f"{self.base_collection_path()}/request-verification",
             {
                 "method": "POST",
                 "params": query_params,
@@ -298,16 +296,14 @@ class RecordService(CrudService):
         query_params: dict = {},
     ) -> bool:
         """Confirms auth record password reset request"""
-        body_params.update(
-            {
-                "token": password_reset_token,
-                "password": password,
-                "passwordConfirm": password_confirm,
-            }
-        )
+        body_params |= {
+            "token": password_reset_token,
+            "password": password,
+            "passwordConfirm": password_confirm,
+        }
 
         self.client.send(
-            self.base_collection_path() + "/confirm-password-reset",
+            f"{self.base_collection_path()}/confirm-password-reset",
             {
                 "method": "POST",
                 "params": query_params,
@@ -320,9 +316,9 @@ class RecordService(CrudService):
         self, token: str, body_params: dict = {}, query_params: dict = {}
     ) -> bool:
         """Confirms email verification request."""
-        body_params.update({"token": token})
+        body_params["token"] = token
         self.client.send(
-            self.base_collection_path() + "/confirm-verification",
+            f"{self.base_collection_path()}/confirm-verification",
             {
                 "method": "POST",
                 "params": query_params,

@@ -48,9 +48,9 @@ class TestFileService:
             {
                 "title": uuid4().hex,
                 "image": FileUpload(
-                    (name1 + ".txt", acontent, "text/plain"),
-                    (name2 + ".txt", bcontent, "application/octet-stream"),
-                    (name3 + ".txt", ccontent, "text/plain"),
+                    (f"{name1}.txt", acontent, "text/plain"),
+                    (f"{name2}.txt", bcontent, "application/octet-stream"),
+                    (f"{name3}.txt", ccontent, "text/plain"),
                 ),
             }
         )
@@ -84,7 +84,7 @@ class TestFileService:
         record = client.collection(state.coll.id).create(
             {
                 "title": uuid4().hex,
-                "image": FileUpload(name1 + ".txt", acontent, "text/plain"),
+                "image": FileUpload(f"{name1}.txt", acontent, "text/plain"),
             }
         )
         assert len(record.image) == 1

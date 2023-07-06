@@ -72,9 +72,9 @@ class AdminService(CrudService):
 
         On success this method automatically updates the client's AuthStore data.
         """
-        body_params.update({"identity": email, "password": password})
+        body_params |= {"identity": email, "password": password}
         response_data = self.client.send(
-            self.base_crud_path() + "/auth-with-password",
+            f"{self.base_crud_path()}/auth-with-password",
             {
                 "method": "POST",
                 "params": query_params,
@@ -95,7 +95,7 @@ class AdminService(CrudService):
         """
         return self.auth_response(
             self.client.send(
-                self.base_crud_path() + "/auth-refresh",
+                f"{self.base_crud_path()}/auth-refresh",
                 {"method": "POST", "params": query_params, "body": body_params},
             )
         )
@@ -104,9 +104,9 @@ class AdminService(CrudService):
         self, email: str, body_params: dict = {}, query_params: dict = {}
     ) -> bool:
         """Sends admin password reset request."""
-        body_params.update({"email": email})
+        body_params["email"] = email
         self.client.send(
-            self.base_crud_path() + "/request-password-reset",
+            f"{self.base_crud_path()}/request-password-reset",
             {
                 "method": "POST",
                 "params": query_params,
@@ -124,15 +124,13 @@ class AdminService(CrudService):
         query_params: dict = {},
     ) -> bool:
         """Confirms admin password reset request."""
-        body_params.update(
-            {
-                "token": password_reset_token,
-                "password": password,
-                "passwordConfirm": password_confirm,
-            }
-        )
+        body_params |= {
+            "token": password_reset_token,
+            "password": password,
+            "passwordConfirm": password_confirm,
+        }
         self.client.send(
-            self.base_crud_path() + "/confirm-password-reset",
+            f"{self.base_crud_path()}/confirm-password-reset",
             {
                 "method": "POST",
                 "params": query_params,

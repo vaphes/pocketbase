@@ -49,13 +49,14 @@ class RealtimeService(BaseService):
         The related sse connection will be autoclosed if after the
         unsubscribe operation there are no active subscriptions left.
         """
-        to_unsubscribe = []
-        for sub in self.subscriptions:
-            if sub.startswith(subscription_prefix):
-                to_unsubscribe.append(sub)
-        if len(to_unsubscribe) == 0:
+        if to_unsubscribe := [
+            sub
+            for sub in self.subscriptions
+            if sub.startswith(subscription_prefix)
+        ]:
+            return self.unsubscribe(to_unsubscribe)
+        else:
             return
-        return self.unsubscribe(to_unsubscribe)
 
     def unsubscribe(self, subscriptions: List[str] | None = None) -> None:
         """

@@ -49,17 +49,17 @@ class TestRecordService:
         state.chained_records = [
             state.record.id,
         ]
-        for _ in range(10):
-            state.chained_records.append(
-                client.collection(state.coll.id)
-                .create(
-                    {
-                        "title": uuid4().hex,
-                        "rel": state.chained_records[-1],
-                    }
-                )
-                .id
+        state.chained_records.extend(
+            client.collection(state.coll.id)
+            .create(
+                {
+                    "title": uuid4().hex,
+                    "rel": state.chained_records[-1],
+                }
             )
+            .id
+            for _ in range(10)
+        )
 
     def test_get_record(self, client: PocketBase, state):
         state.get_record = client.collection(state.coll.id).get_one(state.record.id)
@@ -100,10 +100,7 @@ class TestRecordService:
 
     def test_get_full_list(self, client: PocketBase, state):
         items = client.collection(state.coll.id).get_full_list(batch=1)
-        cnt = 0
-        for i in items:
-            if i.title == state.get_record.title:
-                cnt += 1
+        cnt = sum(1 for i in items if i.title == state.get_record.title)
         assert cnt == 1
 
     def test_get_first_list_item(self, client: PocketBase, state):

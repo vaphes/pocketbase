@@ -11,7 +11,7 @@ from os import environ, path
 
 class TestRecordAuthService:
     def test_create_user(self, client: PocketBase, state):
-        state.email = "%s@%s.com" % (uuid4().hex[:16], uuid4().hex[:16])
+        state.email = f"{uuid4().hex[:16]}@{uuid4().hex[:16]}.com"
         state.password = uuid4().hex
         state.user = client.collection("users").create(
             {
@@ -68,7 +68,7 @@ class TestRecordAuthService:
         state.password = new_password
 
     def test_change_email(self, client: PocketBase, state):
-        new_email = "%s@%s.com" % (uuid4().hex[:16], uuid4().hex[:16])
+        new_email = f"{uuid4().hex[:16]}@{uuid4().hex[:16]}.com"
         assert client.collection("users").requestEmailChange(new_email)
         sleep(0.1)
         mail = environ.get("TMP_EMAIL_DIR") + f"/{new_email}"

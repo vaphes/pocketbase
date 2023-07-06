@@ -32,15 +32,14 @@ class BaseCrudService(BaseService, ABC):
     def _get_list(
         self, base_path: str, page: int = 1, per_page: int = 30, query_params: dict = {}
     ) -> ListResult:
-        query_params.update({"page": page, "perPage": per_page})
+        query_params |= {"page": page, "perPage": per_page}
         response_data = self.client.send(
             base_path, {"method": "GET", "params": query_params}
         )
         items: list[BaseModel] = []
         if "items" in response_data:
             response_data["items"] = response_data["items"] or []
-            for item in response_data["items"]:
-                items.append(self.decode(item))
+            items.extend(self.decode(item) for item in response_data["items"])
         return ListResult(
             response_data.get("page", 1),
             response_data.get("perPage", 0),
@@ -58,10 +57,7 @@ class BaseCrudService(BaseService, ABC):
 
     def _get_first_list_item(self, base_path: str, filter: str, query_params={}):
         query_params.update(
-            {
-                "filter": filter,
-                "$cancelKey": "one_by_filter_" + base_path + "_" + filter,
-            }
+            {"filter": filter, "$cancelKey": f"one_by_filter_{base_path}_{filter}"}
         )
         result = self._get_list(base_path, 1, 1, query_params)
         if not result.items:

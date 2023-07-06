@@ -59,8 +59,7 @@ class Client:
 
     def send(self, path: str, req_config: dict[str:Any]) -> Any:
         """Sends an api http request."""
-        config = {"method": "GET"}
-        config.update(req_config)
+        config = {"method": "GET"} | req_config
         # check if Authorization header can be added
         if self.auth_store.token and (
             "headers" not in config or "Authorization" not in config["headers"]

@@ -26,11 +26,14 @@ class CollectionService(CrudService):
         (including their related records data)!
         """
         self.client.send(
-            self.base_crud_path() + "/import",
+            f"{self.base_crud_path()}/import",
             {
                 "method": "PUT",
                 "params": query_params,
-                "body": {"collections": collections, "deleteMissing": delete_missing},
+                "body": {
+                    "collections": collections,
+                    "deleteMissing": delete_missing,
+                },
             },
         )
         return True

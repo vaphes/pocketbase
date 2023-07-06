@@ -12,7 +12,7 @@ class TestAdminService:
         assert isinstance(client.auth_store.model, Admin)
 
     def test_create_admin(self, client: PocketBase, state):
-        state.email = "%s@%s.com" % (uuid4().hex[:16], uuid4().hex[:16])
+        state.email = f"{uuid4().hex[:16]}@{uuid4().hex[:16]}.com"
         state.password = uuid4().hex
         state.admin = client.admins.create(
             {
@@ -30,7 +30,7 @@ class TestAdminService:
         assert client.auth_store.model.id == state.admin.id
 
     def test_update_admin(self, client: PocketBase, state):
-        state.new_email = "%s@%s.com" % (uuid4().hex[:16], uuid4().hex[:16])
+        state.new_email = f"{uuid4().hex[:16]}@{uuid4().hex[:16]}.com"
         new_password = uuid4().hex
         client.admins.update(
             state.admin.id,

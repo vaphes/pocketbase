@@ -69,10 +69,7 @@ class EventLoop(threading.Thread):
                 if field not in event.__dict__:
                     continue
                 if len(data) > 1:
-                    if data[1].startswith(" "):
-                        value = data[1][1:]
-                    else:
-                        value = data[1]
+                    value = data[1][1:] if data[1].startswith(" ") else data[1]
                 else:
                     value = ""
                 if field == "data":

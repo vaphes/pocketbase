@@ -33,8 +33,7 @@ class Collection(BaseModel):
         # schema
         schema = data.get("schema", [])
         self.schema = []
-        for field in schema:
-            self.schema.append(SchemaField(**field))
+        self.schema.extend(SchemaField(**field) for field in schema)
 
     def is_base(self):
         return self.type == "base"

@@ -28,16 +28,12 @@ class LocalAuthStore(BaseAuthStore):
     @property
     def token(self) -> str:
         data = self._storage_get(self.complete_filepath)
-        if not data or "token" not in data:
-            return None
-        return data["token"]
+        return None if not data or "token" not in data else data["token"]
 
     @property
     def model(self) -> Record | Admin | None:
         data = self._storage_get(self.complete_filepath)
-        if not data or "model" not in data:
-            return None
-        return data["model"]
+        return None if not data or "model" not in data else data["model"]
 
     def save(self, token: str = "", model: Record | Admin | None = None) -> None:
         self._storage_set(self.complete_filepath, {"token": token, "model": model})

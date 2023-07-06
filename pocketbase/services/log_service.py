@@ -22,7 +22,7 @@ class LogService(BaseService):
         self, page: int = 1, per_page: int = 30, query_params: dict = {}
     ) -> ListResult:
         """Returns paginated logged requests list."""
-        query_params.update({"page": page, "perPage": per_page})
+        query_params |= {"page": page, "perPage": per_page}
         response_data = self.client.send(
             "/api/logs/requests",
             {"method": "GET", "params": query_params},
@@ -30,8 +30,7 @@ class LogService(BaseService):
         items: list[LogRequest] = []
         if "items" in response_data:
             response_data["items"] = response_data["items"] or []
-            for item in response_data["items"]:
-                items.append(LogRequest(item))
+            items.extend(LogRequest(item) for item in response_data["items"])
         return ListResult(
             response_data.get("page", 1),
             response_data.get("perPage", 0),
@@ -44,7 +43,7 @@ class LogService(BaseService):
         """Returns a single logged request by its id."""
         return LogRequest(
             self.client.send(
-                "/api/logs/requests/" + quote(id),
+                f"/api/logs/requests/{quote(id)}",
                 {"method": "GET", "params": query_params},
             )
         )
