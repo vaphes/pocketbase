@@ -176,6 +176,10 @@ class RecordService(CrudService):
                 "headers": {"Authorization": ""},
             },
         )
+
+        if response_data is None:
+            raise ConnectionError("No response from PocketBase. Make sure you are using HTTPS if required.")
+
         return self.auth_response(response_data)
 
     def auth_with_oauth2(
