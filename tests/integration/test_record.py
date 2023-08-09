@@ -34,6 +34,18 @@ class TestRecordService:
                 },
             },
         )
+        schema.append(
+            {
+                "name": "multirel",
+                "type": "relation",
+                "required": False,
+                "options": {
+                    "collectionId": state.coll.id,
+                    "cascadeDelete": False,
+                    "maxSelect": 5,
+                },
+            },
+        )
         state.coll = srv.update(state.coll.id, {"schema": schema})
 
     def test_create_record(self, client: PocketBase, state):
@@ -61,6 +73,22 @@ class TestRecordService:
                 .id
             )
 
+    def test_create_multi_relation_record(self, client: PocketBase, state):
+        state.chained_multi_records = [
+            state.record.id,
+        ]
+        for _ in range(4):
+            state.chained_multi_records.append(
+                client.collection(state.coll.id)
+                .create(
+                    {
+                        "title": uuid4().hex,
+                        "multirel": state.chained_multi_records[:],
+                    }
+                )
+                .id
+            )
+
     def test_get_record(self, client: PocketBase, state):
         state.get_record = client.collection(state.coll.id).get_one(state.record.id)
         assert state.get_record.title is not None
@@ -78,6 +106,18 @@ class TestRecordService:
             if i > 5:
                 break
             rel = rel.expand["rel"]
+
+    def test_get_record_expand_multirel(self, client: PocketBase, state):
+        rel = client.collection(state.coll.id).get_one(
+            state.chained_multi_records[-1],
+            {"expand": "multirel.multirel.multirel.multirel"},
+        )
+        for i, r in enumerate(reversed(state.chained_multi_records)):
+            assert rel.id == r
+            if i >= 4:
+                break
+            assert len(rel.expand["multirel"]) == 4 - i
+            rel = rel.expand["multirel"][-1]
 
     def test_get_record_expand_full_list(self, client: PocketBase, state):
         rel = client.collection(state.coll.id).get_full_list(
