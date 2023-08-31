@@ -19,6 +19,8 @@ class Record(BaseModel):
 
     @classmethod
     def parse_expanded(cls, data: dict):
+        if isinstance(data, list):
+            return [cls(a) for a in data]
         return cls(data)
 
     def load_expanded(self) -> None:
