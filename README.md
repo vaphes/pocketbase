@@ -90,7 +90,7 @@ to start the sandbox follow the following steps:
 export TMP_EMAIL_DIR=`mktemp -d`  # Export temp dir used for sendmail sandbox
 bash ./tests/integration/pocketbase     # Run the pocketbase sandbox (automatically downloads the latest pocketbase instance)
 pytest  # Run test including sandbox API integration tests
-
+```
 ## License
 
 The PocketBase Python SDK is <a href="https://github.com/vaphes/pocketbase/blob/master/LICENCE.txt">MIT licensed</a> code.
