@@ -183,7 +183,7 @@ class RecordService(CrudService):
         provider: str,
         code: str,
         code_verifier: str,
-        redirct_url: str,
+        redirect_url: str,
         create_data={},
         body_params={},
         query_params={},
@@ -202,7 +202,7 @@ class RecordService(CrudService):
                 "provider": provider,
                 "code": code,
                 "codeVerifier": code_verifier,
-                "redirectUrl": redirct_url,
+                "redirectUrl": redirect_url,
                 "createData": create_data,
             }
         )
