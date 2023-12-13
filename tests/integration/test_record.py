@@ -107,6 +107,21 @@ class TestRecordService:
                 break
             rel = rel.expand["rel"]
 
+    def test_get_record_backrelation_expand(self, client: PocketBase, state):
+        backrel_field = "%s(rel)" % state.coll.id
+        rel = client.collection(state.coll.id).get_one(
+            state.chained_records[0],
+            {"expand": ".".join([backrel_field] * 6)},
+        )
+        for i, r in enumerate(state.chained_records):
+            if isinstance(rel, list):
+                assert len(rel) == 1
+                rel = rel[0]
+            assert rel.id == r
+            if i > 5:
+                break
+            rel = rel.expand[backrel_field]
+
     def test_get_record_expand_multirel(self, client: PocketBase, state):
         rel = client.collection(state.coll.id).get_one(
             state.chained_multi_records[-1],
