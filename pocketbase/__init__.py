@@ -1,6 +1,6 @@
 __title__ = "pocketbase"
 __description__ = "PocketBase client SDK for python."
-__version__ = "0.9.0"
+__version__ = "0.10.0"
 
 
 from .client import Client
