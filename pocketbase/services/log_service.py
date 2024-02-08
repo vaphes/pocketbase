@@ -18,13 +18,13 @@ class HourlyStats:
 
 
 class LogService(BaseService):
-    def get_request_list(
+    def get_list(
         self, page: int = 1, per_page: int = 30, query_params: dict = {}
     ) -> ListResult:
         """Returns paginated logged requests list."""
         query_params.update({"page": page, "perPage": per_page})
         response_data = self.client.send(
-            "/api/logs/requests",
+            "/api/logs/",
             {"method": "GET", "params": query_params},
         )
         items: list[LogRequest] = []
@@ -40,21 +40,21 @@ class LogService(BaseService):
             items,
         )
 
-    def get_request(self, id: str, query_params: dict = {}) -> LogRequest:
+    def get(self, id: str, query_params: dict = {}) -> LogRequest:
         """Returns a single logged request by its id."""
         return LogRequest(
             self.client.send(
-                "/api/logs/requests/" + quote(id),
+                "/api/logs/" + quote(id),
                 {"method": "GET", "params": query_params},
             )
         )
 
-    def get_requests_stats(self, query_params: dict = {}) -> list[HourlyStats]:
+    def get_stats(self, query_params: dict = {}) -> list[HourlyStats]:
         """Returns request logs statistics."""
         return [
             HourlyStats(total=stat["total"], date=to_datetime(stat["date"]))
             for stat in self.client.send(
-                "/api/logs/requests/stats",
+                "/api/logs/stats",
                 {"method": "GET", "params": query_params},
             )
         ]
