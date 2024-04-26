@@ -133,6 +133,10 @@ class Client:
             result += params
         return result
 
+    def get_file_token(self):
+        res = self.send("/api/files/token", req_config={"method": "POST"})
+        return res["token"]
+
     def build_url(self, path: str) -> str:
         url = self.base_url
         if not self.base_url.endswith("/"):
