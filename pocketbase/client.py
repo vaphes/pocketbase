@@ -8,6 +8,7 @@ import httpx
 from pocketbase.models import FileUpload
 from pocketbase.models.record import Record
 from pocketbase.services.admin_service import AdminService
+from pocketbase.services.backups_service import BackupsService
 from pocketbase.services.collection_service import CollectionService
 from pocketbase.services.log_service import LogService
 from pocketbase.services.realtime_service import RealtimeService
@@ -45,6 +46,7 @@ class Client:
         self.http_client = http_client or httpx.Client()
         # services
         self.admins = AdminService(self)
+        self.backups = BackupsService(self)
         self.collections = CollectionService(self)
         self.logs = LogService(self)
         self.settings = SettingsService(self)
@@ -57,13 +59,13 @@ class Client:
             self.record_service[id_or_name] = RecordService(self, id_or_name)
         return self.record_service[id_or_name]
 
-    def send(self, path: str, req_config: dict[str:Any]) -> Any:
-        """Sends an api http request."""
+    def _send(self, path: str, req_config: dict[str:Any]) -> httpx.Response:
+        """Sends an api http request returning response object."""
         config = {"method": "GET"}
         config.update(req_config)
         # check if Authorization header can be added
         if self.auth_store.token and (
-            "headers" not in config or "Authorization" not in config["headers"]
+                "headers" not in config or "Authorization" not in config["headers"]
         ):
             config["headers"] = config.get("headers", {})
             config["headers"].update({"Authorization": self.auth_store.token})
@@ -105,6 +107,16 @@ class Client:
                 f"General request error. Original error: {e}",
                 original_error=e,
             )
+        return response
+
+    def send_raw(self, path: str, req_config: dict[str:Any]) -> bytes:
+        """Sends an api http request returning raw bytes response."""
+        response = self._send(path, req_config)
+        return response.content
+
+    def send(self, path: str, req_config: dict[str:Any]) -> Any:
+        """Sends an api http request."""
+        response = self._send(path, req_config)
         try:
             data = response.json()
         except Exception:
