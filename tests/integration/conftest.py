@@ -1,3 +1,5 @@
+import logging
+
 from pocketbase import PocketBase
 from pocketbase.utils import ClientResponseError
 import pytest
