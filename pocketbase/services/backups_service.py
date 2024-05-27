@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pocketbase.models import Backup
+from pocketbase.models import Backup, FileUpload
 from pocketbase.services.utils import BaseService
 
 
@@ -30,3 +30,9 @@ class BackupsService(BaseService):
 
     def delete(self, key: str):
         self.client.send("%s/%s" % (self.base_path(), key), {"method": "DELETE"})
+
+    def restore(self,  key: str):
+        self.client.send("%s/%s/restore" % (self.base_path(), key), {"method": "POST"})
+
+    def upload(self, file_upload: FileUpload):
+        self.client.send(self.base_path() + "/upload", {"method": "POST", "body": {"file": file_upload}})
