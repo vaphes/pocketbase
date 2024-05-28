@@ -30,9 +30,14 @@ client = PocketBase('http://127.0.0.1:8090')
 # authenticate as regular user
 user_data = client.collection("users").auth_with_password(
     "user@example.com", "0123456789")
+# check if user token is valid
+user_data.is_valid
 
 # or as admin
 admin_data = client.admins.auth_with_password("test@example.com", "0123456789")
+
+# check if admin token is valid
+admin_data.is_valid
 
 # list and filter "example" collection records
 result = client.collection("example").get_list(

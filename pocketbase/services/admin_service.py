@@ -3,6 +3,7 @@ from __future__ import annotations
 from pocketbase.models.utils.base_model import BaseModel
 from pocketbase.services.utils.crud_service import CrudService
 from pocketbase.models.admin import Admin
+from pocketbase.utils import validate_token
 
 
 class AdminAuthResponse:
@@ -14,6 +15,10 @@ class AdminAuthResponse:
         self.admin = admin
         for key, value in kwargs.items():
             setattr(self, key, value)
+
+    @property
+    def is_valid(self)->bool:
+        return validate_token(self.token)
 
 
 class AdminService(CrudService):
