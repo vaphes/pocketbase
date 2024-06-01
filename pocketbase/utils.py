@@ -2,6 +2,9 @@ from __future__ import annotations
 
 import re
 import datetime
+from datetime import datetime
+import base64
+import json
 from typing import Any
 
 
@@ -19,6 +22,28 @@ def to_datetime(
     except Exception:
         return str_datetime
 
+
+def normalize_base64(encoded_str):
+    encoded_str = encoded_str.strip()
+    padding_needed = len(encoded_str) % 4
+    if padding_needed:
+        encoded_str += '=' * (4 - padding_needed)
+    return encoded_str
+
+def validate_token(token: str) -> bool:
+    if len(token.split('.')) != 3:
+        return False
+    decoded_bytes = base64.urlsafe_b64decode(normalize_base64(token.split('.')[1]))
+    decoded_str = decoded_bytes.decode('utf-8')
+    data = json.loads(decoded_str)
+    exp = data["exp"]
+    if not isinstance(exp, int):
+        try:
+            exp = int(exp)
+        except ValueError or TypeError:
+            return False
+    current_time = datetime.now().timestamp()
+    return exp > current_time
 
 class ClientResponseError(Exception):
     url: str = ""

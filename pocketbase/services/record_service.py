@@ -8,7 +8,7 @@ from pocketbase.services.realtime_service import Callable, MessageData
 from pocketbase.models.utils.base_model import BaseModel
 from pocketbase.models.record import Record
 from pocketbase.services.utils.crud_service import CrudService
-from pocketbase.utils import camel_to_snake
+from pocketbase.utils import camel_to_snake, validate_token
 
 
 class RecordAuthResponse:
@@ -20,6 +20,9 @@ class RecordAuthResponse:
         self.record = record
         for key, value in kwargs.items():
             setattr(self, key, value)
+    @property
+    def is_valid(self)->bool:
+        return validate_token(self.token)
 
 
 @dataclass
