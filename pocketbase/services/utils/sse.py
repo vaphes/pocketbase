@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import Callable
 import dataclasses
 import threading
+from typing import Callable
 
 import httpx
 
@@ -125,7 +125,9 @@ class SSEClient:
         self._loop_thread.daemon = True
         self._loop_thread.start()
 
-    def add_event_listener(self, event: str, callback: Callable[[Event], None]) -> None:
+    def add_event_listener(
+        self, event: str, callback: Callable[[Event], None]
+    ) -> None:
         self._listeners[event] = callback
         self._loop_thread.listeners = self._listeners
 

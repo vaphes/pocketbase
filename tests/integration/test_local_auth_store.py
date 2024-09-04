@@ -1,10 +1,12 @@
+import tempfile
+from uuid import uuid4
+
+import pytest
+
 from pocketbase import PocketBase
 from pocketbase.models.admin import Admin
-from pocketbase.utils import ClientResponseError
 from pocketbase.stores.local_auth_store import LocalAuthStore
-from uuid import uuid4
-import pytest
-import tempfile
+from pocketbase.utils import ClientResponseError
 
 
 class TestLocalAuthStore:

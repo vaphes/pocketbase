@@ -1,5 +1,6 @@
-from pytest_httpx import HTTPXMock
 import httpx
+from pytest_httpx import HTTPXMock
+
 from pocketbase import PocketBase
 
 

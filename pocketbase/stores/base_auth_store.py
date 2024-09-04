@@ -12,7 +12,7 @@ class BaseAuthStore(ABC):
     PocketBase AuthStore implementations.
     """
 
-    base_token: str
+    base_token: str | None
     base_model: Record | Admin | None
 
     def __init__(
@@ -32,7 +32,9 @@ class BaseAuthStore(ABC):
         """Retrieves the stored model data (if any)."""
         return self.base_model
 
-    def save(self, token: str = "", model: Record | Admin | None = None) -> None:
+    def save(
+        self, token: str = "", model: Record | Admin | None = None
+    ) -> None:
         """Saves the provided new token and model data in the auth store."""
 
         self.base_token = token if token else ""

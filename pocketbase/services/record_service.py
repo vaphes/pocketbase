@@ -1,12 +1,11 @@
 from __future__ import annotations
+
 from dataclasses import dataclass
-from typing import List
-
 from urllib.parse import quote, urlencode
-from pocketbase.services.realtime_service import Callable, MessageData
 
-from pocketbase.models.utils.base_model import BaseModel
 from pocketbase.models.record import Record
+from pocketbase.models.utils.base_model import BaseModel
+from pocketbase.services.realtime_service import Callable, MessageData
 from pocketbase.services.utils.crud_service import CrudService
 from pocketbase.utils import camel_to_snake, validate_token
 
@@ -20,8 +19,9 @@ class RecordAuthResponse:
         self.record = record
         for key, value in kwargs.items():
             setattr(self, key, value)
+
     @property
-    def is_valid(self)->bool:
+    def is_valid(self) -> bool:
         return validate_token(self.token)
 
 
@@ -73,40 +73,48 @@ class RecordService(CrudService):
 
     def subscribe(self, callback: Callable[[MessageData], None]):
         """Subscribe to realtime changes of any record from the collection."""
-        return self.client.realtime.subscribe(self.collection_id_or_name, callback)
+        return self.client.realtime.subscribe(
+            self.collection_id_or_name, callback
+        )
 
-    def subscribeOne(self, record_id: str, callback: Callable[[MessageData], None]):
+    def subscribeOne(
+        self, record_id: str, callback: Callable[[MessageData], None]
+    ):
         """Subscribe to the realtime changes of a single record in the collection."""
         return self.client.realtime.subscribe(
             self.collection_id_or_name + "/" + record_id, callback
         )
 
-    def unsubscribe(self, *record_ids: List[str]):
+    def unsubscribe(self, *record_ids: str):
         """Unsubscribe to the realtime changes of a single record in the collection."""
         if record_ids and len(record_ids) > 0:
             subs = []
             for id in record_ids:
                 subs.append(self.collection_id_or_name + "/" + id)
             return self.client.realtime.unsubscribe(subs)
-        return self.client.realtime.unsubscribe_by_prefix(self.collection_id_or_name)
+        return self.client.realtime.unsubscribe_by_prefix(
+            self.collection_id_or_name
+        )
 
     def update(self, id: str, body_params: dict = {}, query_params: dict = {}):
         """
         If the current `client.auth_store.model` matches with the updated id, then
         on success the `client.auth_store.model` will be updated with the result.
         """
-        item = super().update(id, body_params=body_params, query_params=query_params)
+        item = super().update(
+            id, body_params=body_params, query_params=query_params
+        )
         try:
             if (
                 self.client.auth_store.model.collection_id is not None
                 and item.id == self.client.auth_store.model.id
             ):
                 self.client.auth_store.save(self.client.auth_store.token, item)
-        except:
+        except Exception:
             pass
         return item
 
-    def delete(self, id: str, query_params: dict = {}):
+    def delete(self, id: str, query_params: dict = {}) -> bool:
         """
         If the current `client.auth_store.model` matches with the deleted id,
         then on success the `client.auth_store` will be cleared.
@@ -119,7 +127,7 @@ class RecordService(CrudService):
                 and id == self.client.auth_store.model.id
             ):
                 self.client.auth_store.clear()
-        except:
+        except Exception:
             pass
         return success
 
@@ -129,9 +137,11 @@ class RecordService(CrudService):
         token = response_data.pop("token", "")
         if token and record:
             self.client.auth_store.save(token, record)
-        return RecordAuthResponse(token=token, record=record, **response_data)
+        return RecordAuthResponse(token=token, record=record, **response_data)  # type: ignore
 
-    def list_auth_methods(self, query_params: str = {}):
+    def list_auth_methods(self, query_params: dict | None) -> AuthMethodsList:
+        if query_params is None:
+            query_params = {}
         """Returns all available collection auth methods."""
         response_data = self.client.send(
             self.base_collection_path() + "/auth-methods",
@@ -142,7 +152,8 @@ class RecordService(CrudService):
 
         def apply_pythonic_keys(ap):
             pythonic_keys_ap = {
-                camel_to_snake(key).replace("@", ""): value for key, value in ap.items()
+                camel_to_snake(key).replace("@", ""): value
+                for key, value in ap.items()
             }
             return pythonic_keys_ap
 
@@ -152,7 +163,9 @@ class RecordService(CrudService):
                 apply_pythonic_keys, response_data.get("authProviders", [])
             )
         ]
-        return AuthMethodsList(username_password, email_password, auth_providers)
+        return AuthMethodsList(
+            username_password, email_password, auth_providers
+        )
 
     def auth_with_password(
         self,
@@ -169,7 +182,9 @@ class RecordService(CrudService):
         - the authentication token
         - the authenticated record model
         """
-        body_params.update({"identity": username_or_email, "password": password})
+        body_params.update(
+            {"identity": username_or_email, "password": password}
+        )
         response_data = self.client.send(
             self.base_collection_path() + "/auth-with-password",
             {
@@ -250,7 +265,11 @@ class RecordService(CrudService):
         return True
 
     def confirmEmailChange(
-        self, token: str, password: str, body_params: dict = {}, query_params: dict = {}
+        self,
+        token: str,
+        password: str,
+        body_params: dict = {},
+        query_params: dict = {},
     ) -> bool:
         """
         Confirms Email Change by with the confirmation token and confirm with users password

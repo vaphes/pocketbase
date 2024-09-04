@@ -1,7 +1,9 @@
+from uuid import uuid4
+
+import pytest
+
 from pocketbase import PocketBase
 from pocketbase.utils import ClientResponseError
-from uuid import uuid4
-import pytest
 
 
 class TestRecordService:
@@ -90,7 +92,9 @@ class TestRecordService:
             )
 
     def test_get_record(self, client: PocketBase, state):
-        state.get_record = client.collection(state.coll.id).get_one(state.record.id)
+        state.get_record = client.collection(state.coll.id).get_one(
+            state.record.id
+        )
         assert state.get_record.title is not None
         assert state.record.title == state.get_record.title
         assert not state.get_record.is_new

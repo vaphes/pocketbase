@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-from typing import Any
-import pickle
 import os
+import pickle
+from typing import Any
 
-from pocketbase.stores.base_auth_store import BaseAuthStore
-from pocketbase.models.record import Record
 from pocketbase.models.admin import Admin
+from pocketbase.models.record import Record
+from pocketbase.stores.base_auth_store import BaseAuthStore
 
 
 class LocalAuthStore(BaseAuthStore):
@@ -26,7 +26,7 @@ class LocalAuthStore(BaseAuthStore):
         self.complete_filepath = os.path.join(filepath, filename)
 
     @property
-    def token(self) -> str:
+    def token(self) -> str | None:
         data = self._storage_get(self.complete_filepath)
         if not data or "token" not in data:
             return None
@@ -39,8 +39,12 @@ class LocalAuthStore(BaseAuthStore):
             return None
         return data["model"]
 
-    def save(self, token: str = "", model: Record | Admin | None = None) -> None:
-        self._storage_set(self.complete_filepath, {"token": token, "model": model})
+    def save(
+        self, token: str = "", model: Record | Admin | None = None
+    ) -> None:
+        self._storage_set(
+            self.complete_filepath, {"token": token, "model": model}
+        )
         super().save(token, model)
 
     def clear(self) -> None:

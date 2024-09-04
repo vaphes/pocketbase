@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from abc import ABC
+from abc import ABC, abstractmethod
 
 from pocketbase.models.utils.base_model import BaseModel
 from pocketbase.models.utils.list_result import ListResult
@@ -8,6 +8,7 @@ from pocketbase.services.utils.base_crud_service import BaseCrudService
 
 
 class CrudService(BaseCrudService, ABC):
+    @abstractmethod
     def base_crud_path(self) -> str:
         """Base path for the crud actions (without trailing slash, eg. '/admins')."""
 
@@ -19,7 +20,9 @@ class CrudService(BaseCrudService, ABC):
     def get_list(
         self, page: int = 1, per_page: int = 30, query_params: dict = {}
     ) -> ListResult:
-        return self._get_list(self.base_crud_path(), page, per_page, query_params)
+        return self._get_list(
+            self.base_crud_path(), page, per_page, query_params
+        )
 
     def get_first_list_item(self, filter: str, query_params={}):
         """
@@ -31,7 +34,9 @@ class CrudService(BaseCrudService, ABC):
         For consistency with `getOne`, this method will throw a 404
         ClientResponseError if no item was found.
         """
-        return self._get_first_list_item(self.base_crud_path(), filter, query_params)
+        return self._get_first_list_item(
+            self.base_crud_path(), filter, query_params
+        )
 
     def get_one(self, id: str, query_params: dict = {}) -> BaseModel:
         """
@@ -39,13 +44,17 @@ class CrudService(BaseCrudService, ABC):
         """
         return self._get_one(self.base_crud_path(), id, query_params)
 
-    def create(self, body_params: dict = {}, query_params: dict = {}) -> BaseModel:
+    def create(
+        self, body_params: dict = {}, query_params: dict = {}
+    ) -> BaseModel:
         return self._create(self.base_crud_path(), body_params, query_params)
 
     def update(
         self, id: str, body_params: dict = {}, query_params: dict = {}
     ) -> BaseModel:
-        return self._update(self.base_crud_path(), id, body_params, query_params)
+        return self._update(
+            self.base_crud_path(), id, body_params, query_params
+        )
 
     def delete(self, id: str, query_params: dict = {}) -> bool:
         return self._delete(self.base_crud_path(), id, query_params)

@@ -1,8 +1,10 @@
-from pocketbase import PocketBase
-import pytest
-from pocketbase.utils import ClientResponseError
-from uuid import uuid4
 from os import environ, path
+from uuid import uuid4
+
+import pytest
+
+from pocketbase import PocketBase
+from pocketbase.utils import ClientResponseError
 
 
 class TestSettingsService:
@@ -22,8 +24,12 @@ class TestSettingsService:
 
     def test_email(self, client: PocketBase, state):
         addr = uuid4().hex
-        assert client.settings.test_email(f"settings@{addr}.com", "verification")
-        assert path.exists(environ.get("TMP_EMAIL_DIR") + f"/settings@{addr}.com")
+        assert client.settings.test_email(
+            f"settings@{addr}.com", "verification"
+        )
+        assert path.exists(
+            environ.get("TMP_EMAIL_DIR") + f"/settings@{addr}.com"
+        )
 
     def test_s3(self, client: PocketBase, state):
         with pytest.raises(ClientResponseError) as exc:

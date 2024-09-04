@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from pocketbase.services.utils.crud_service import CrudService
-from pocketbase.models.utils.base_model import BaseModel
 from pocketbase.models.collection import Collection
+from pocketbase.models.utils.base_model import BaseModel
+from pocketbase.services.utils.crud_service import CrudService
 
 
 class CollectionService(CrudService):
@@ -30,7 +30,10 @@ class CollectionService(CrudService):
             {
                 "method": "PUT",
                 "params": query_params,
-                "body": {"collections": collections, "deleteMissing": delete_missing},
+                "body": {
+                    "collections": collections,
+                    "deleteMissing": delete_missing,
+                },
             },
         )
         return True

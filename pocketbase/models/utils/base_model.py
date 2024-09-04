@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from abc import ABC
 import datetime
+from abc import ABC
 
 from pocketbase.utils import to_datetime
 

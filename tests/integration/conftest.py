@@ -1,8 +1,7 @@
-import logging
+import pytest
 
 from pocketbase import PocketBase
 from pocketbase.utils import ClientResponseError
-import pytest
 
 
 class State:
