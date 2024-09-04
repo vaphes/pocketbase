@@ -1,13 +1,13 @@
 from __future__ import annotations
 
+import datetime
 from dataclasses import dataclass
 from typing import Union
 from urllib.parse import quote
-import datetime
 
-from pocketbase.services.utils.base_service import BaseService
-from pocketbase.models.utils.list_result import ListResult
 from pocketbase.models.log_request import LogRequest
+from pocketbase.models.utils.list_result import ListResult
+from pocketbase.services.utils.base_service import BaseService
 from pocketbase.utils import to_datetime
 
 

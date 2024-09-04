@@ -24,7 +24,6 @@ class Client:
     auth_store: BaseAuthStore
     settings: SettingsService
     admins: AdminService
-    records: Record
     collections: CollectionService
     records: RecordService
     logs: LogService
@@ -59,13 +58,13 @@ class Client:
             self.record_service[id_or_name] = RecordService(self, id_or_name)
         return self.record_service[id_or_name]
 
-    def _send(self, path: str, req_config: dict[str:Any]) -> httpx.Response:
+    def _send(self, path: str, req_config: dict[str, Any]) -> httpx.Response:
         """Sends an api http request returning response object."""
-        config = {"method": "GET"}
+        config: dict[str, Any] = {"method": "GET"}
         config.update(req_config)
         # check if Authorization header can be added
         if self.auth_store.token and (
-                "headers" not in config or "Authorization" not in config["headers"]
+            "headers" not in config or "Authorization" not in config["headers"]
         ):
             config["headers"] = config.get("headers", {})
             config["headers"].update({"Authorization": self.auth_store.token})
@@ -99,7 +98,7 @@ class Client:
                 headers=headers,
                 json=body,
                 data=data,
-                files=files,
+                files=files,  # type: ignore
                 timeout=self.timeout,
             )
         except Exception as e:
@@ -109,12 +108,12 @@ class Client:
             )
         return response
 
-    def send_raw(self, path: str, req_config: dict[str:Any]) -> bytes:
+    def send_raw(self, path: str, req_config: dict[str, Any]) -> bytes:
         """Sends an api http request returning raw bytes response."""
         response = self._send(path, req_config)
         return response.content
 
-    def send(self, path: str, req_config: dict[str:Any]) -> Any:
+    def send(self, path: str, req_config: dict[str, Any]) -> Any:
         """Sends an api http request."""
         response = self._send(path, req_config)
         try:

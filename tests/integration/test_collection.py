@@ -1,9 +1,10 @@
-from pocketbase import PocketBase
-from pocketbase.utils import ClientResponseError
-from pocketbase.models.collection import Collection
-
 from uuid import uuid4
+
 import pytest
+
+from pocketbase import PocketBase
+from pocketbase.models.collection import Collection
+from pocketbase.utils import ClientResponseError
 
 
 class TestCollectionService:
@@ -54,7 +55,7 @@ class TestCollectionService:
     def test_delete(self, client: PocketBase, state):
         client.collections.delete(state.collection.id)
         with pytest.raises(ClientResponseError) as exc:
-            client.collections.delete(state.collection.id, uuid4().hex)
+            client.collections.delete(state.collection.id, uuid4().hex)  # type: ignore
         assert exc.value.status == 404  # double already deleted
 
 

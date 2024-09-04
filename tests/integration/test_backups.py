@@ -2,15 +2,16 @@ import datetime
 import errno
 import http
 import time
-from typing import Iterator
+from typing import Any, Generator, Iterator
 from uuid import uuid4
 
 import pytest
 
 from pocketbase import PocketBase
 from pocketbase.models import FileUpload
-from pocketbase.models.collection import Collection
+from pocketbase.models.utils.base_model import BaseModel
 from pocketbase.utils import ClientResponseError
+
 
 def cleanup_backup(client: PocketBase, backup_name: str):
     # Cleanup
@@ -20,7 +21,10 @@ def cleanup_backup(client: PocketBase, backup_name: str):
     # Check that it was deleted
     for backup in client.backups.get_full_list():
         if backup.key == backup_name:
-            pytest.fail("Backup %s still found in list of all backups" % (backup_name,))
+            pytest.fail(
+                "Backup %s still found in list of all backups" % (backup_name,)
+            )
+
 
 @pytest.fixture
 def backup_name(client: PocketBase) -> Iterator[str]:
@@ -33,7 +37,7 @@ def backup_name(client: PocketBase) -> Iterator[str]:
 
 
 @pytest.fixture
-def target_collection(client: PocketBase) -> Collection:
+def target_collection(client: PocketBase) -> Generator[BaseModel, Any, None]:
     collection = client.collections.create(
         {
             "name": uuid4().hex,
@@ -57,7 +61,9 @@ def target_collection(client: PocketBase) -> Collection:
 
 
 class TestBackupsService:
-    def test_create_list_download_and_delete(self, client: PocketBase, state, backup_name):
+    def test_create_list_download_and_delete(
+        self, client: PocketBase, state, backup_name
+    ):
         # Find new backup in list of all backups
         for backup in client.backups.get_full_list():
             if backup.key == backup_name:
@@ -66,14 +72,19 @@ class TestBackupsService:
                 assert backup.size > 0
                 break
         else:
-            pytest.fail("Backup %s not found in list of all backups" % (state.backup_name,))
+            pytest.fail(
+                "Backup %s not found in list of all backups"
+                % (state.backup_name,)
+            )
 
             # Download the backup
         data = client.backups.download(backup_name)
         assert isinstance(data, bytes)
         assert len(data) == state.backup.size
 
-    def test_restore(self, client: PocketBase, state, backup_name, target_collection):
+    def test_restore(
+        self, client: PocketBase, state, backup_name, target_collection
+    ):
         # Create a record that will be deleted with backup is restored.
         collection = client.collection(target_collection.id)
         state.record = collection.create({"title": "Test record"})
@@ -98,10 +109,14 @@ class TestBackupsService:
         state.downloaded_backup = client.backups.download(backup_name)
 
         state.new_backup_name = "%s.zip" % (uuid4().hex[:16],)
-        upload = FileUpload(state.new_backup_name, state.downloaded_backup, "application/zip")
+        upload = FileUpload(
+            state.new_backup_name, state.downloaded_backup, "application/zip"
+        )
         client.backups.upload(upload)
         try:
-            state.downloaded_new_backup = client.backups.download(state.new_backup_name)
+            state.downloaded_new_backup = client.backups.download(
+                state.new_backup_name
+            )
             assert state.downloaded_new_backup == state.downloaded_backup
         finally:
             cleanup_backup(client, state.new_backup_name)

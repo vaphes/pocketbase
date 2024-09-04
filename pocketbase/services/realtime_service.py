@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-from typing import Callable, List
 import dataclasses
 import json
+from typing import Callable, List
 
+from pocketbase.models.record import Record
 from pocketbase.services.utils.base_service import BaseService
 from pocketbase.services.utils.sse import Event, SSEClient
-from pocketbase.models.record import Record
 
 
 @dataclasses.dataclass
@@ -142,13 +142,17 @@ class RealtimeService(BaseService):
     def _connect(self) -> None:
         self._disconnect()
         self.event_source = SSEClient(self.client.build_url("/api/realtime"))
-        self.event_source.add_event_listener("PB_CONNECT", self._connect_handler)
+        self.event_source.add_event_listener(
+            "PB_CONNECT", self._connect_handler
+        )
 
     def _disconnect(self) -> None:
         self._remove_subscription_listeners()
         self.client_id = ""
         if not self.event_source:
             return
-        self.event_source.remove_event_listener("PB_CONNECT", self._connect_handler)
+        self.event_source.remove_event_listener(
+            "PB_CONNECT", self._connect_handler
+        )
         self.event_source.close()
         self.event_source = None

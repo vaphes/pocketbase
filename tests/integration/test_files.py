@@ -1,8 +1,10 @@
-from pocketbase import PocketBase
-from pocketbase.client import FileUpload
-import httpx
 from random import getrandbits
 from uuid import uuid4
+
+import httpx
+
+from pocketbase import PocketBase
+from pocketbase.client import FileUpload
 
 
 class TestFileService:

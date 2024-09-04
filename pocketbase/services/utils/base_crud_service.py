@@ -1,15 +1,16 @@
 from __future__ import annotations
 
-from abc import ABC
+from abc import ABC, abstractmethod
 from urllib.parse import quote
-from pocketbase.utils import ClientResponseError
 
 from pocketbase.models.utils.base_model import BaseModel
 from pocketbase.models.utils.list_result import ListResult
 from pocketbase.services.utils.base_service import BaseService
+from pocketbase.utils import ClientResponseError
 
 
 class BaseCrudService(BaseService, ABC):
+    @abstractmethod
     def decode(self, data: dict) -> BaseModel:
         """Response data decoder"""
 
@@ -30,7 +31,11 @@ class BaseCrudService(BaseService, ABC):
         return request(result, 1)
 
     def _get_list(
-        self, base_path: str, page: int = 1, per_page: int = 30, query_params: dict = {}
+        self,
+        base_path: str,
+        page: int = 1,
+        per_page: int = 30,
+        query_params: dict = {},
     ) -> ListResult:
         query_params.update({"page": page, "perPage": per_page})
         response_data = self.client.send(
@@ -49,14 +54,19 @@ class BaseCrudService(BaseService, ABC):
             items,
         )
 
-    def _get_one(self, base_path: str, id: str, query_params: dict = {}) -> BaseModel:
+    def _get_one(
+        self, base_path: str, id: str, query_params: dict = {}
+    ) -> BaseModel:
         return self.decode(
             self.client.send(
-                f"{base_path}/{quote(id)}", {"method": "GET", "params": query_params}
+                f"{base_path}/{quote(id)}",
+                {"method": "GET", "params": query_params},
             )
         )
 
-    def _get_first_list_item(self, base_path: str, filter: str, query_params={}):
+    def _get_first_list_item(
+        self, base_path: str, filter: str, query_params={}
+    ):
         query_params.update(
             {
                 "filter": filter,
@@ -81,17 +91,26 @@ class BaseCrudService(BaseService, ABC):
         )
 
     def _update(
-        self, base_path: str, id: str, body_params: dict = {}, query_params: dict = {}
+        self,
+        base_path: str,
+        id: str,
+        body_params: dict = {},
+        query_params: dict = {},
     ) -> BaseModel:
         return self.decode(
             self.client.send(
                 f"{base_path}/{quote(id)}",
-                {"method": "PATCH", "params": query_params, "body": body_params},
+                {
+                    "method": "PATCH",
+                    "params": query_params,
+                    "body": body_params,
+                },
             )
         )
 
     def _delete(self, base_path: str, id: str, query_params: dict = {}) -> bool:
         self.client.send(
-            f"{base_path}/{quote(id)}", {"method": "DELETE", "params": query_params}
+            f"{base_path}/{quote(id)}",
+            {"method": "DELETE", "params": query_params},
         )
         return True

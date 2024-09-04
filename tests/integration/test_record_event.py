@@ -1,10 +1,10 @@
-from pocketbase import PocketBase
+from time import sleep
 from uuid import uuid4
+
+from pocketbase import PocketBase
+from pocketbase.models import Record
 from pocketbase.services import RecordService
 from pocketbase.services.realtime_service import MessageData
-from pocketbase.models import Record
-
-from time import sleep
 
 
 class TestRecordEventService:

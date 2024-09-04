@@ -1,12 +1,13 @@
-from pocketbase import PocketBase
-from pocketbase.models.record import Record
-from pocketbase.models.admin import Admin
-from pocketbase.utils import ClientResponseError
-
-from uuid import uuid4
-import pytest
-from time import sleep
 from os import environ, path
+from time import sleep
+from uuid import uuid4
+
+import pytest
+
+from pocketbase import PocketBase
+from pocketbase.models.admin import Admin
+from pocketbase.models.record import Record
+from pocketbase.utils import ClientResponseError
 
 
 class TestRecordAuthService:
@@ -27,7 +28,9 @@ class TestRecordAuthService:
     def test_login_user(self, client: PocketBase, state):
         oldtoken = client.auth_store.token
         client.auth_store.clear()
-        client.collection("users").auth_with_password(state.email, state.password)
+        client.collection("users").auth_with_password(
+            state.email, state.password
+        )
         # should now be logged in as new user
         assert isinstance(client.auth_store.model, Record)
         assert client.auth_store.model.id == state.user.id
@@ -77,7 +80,9 @@ class TestRecordAuthService:
             if "/confirm-email-change/" in line:
                 token = line.split("/confirm-email-change/", 1)[1].split('"')[0]
         assert len(token) > 10
-        assert client.collection("users").confirmEmailChange(token, state.password)
+        assert client.collection("users").confirmEmailChange(
+            token, state.password
+        )
         client.collection("users").auth_with_password(new_email, state.password)
         state.email = new_email
 
@@ -90,12 +95,16 @@ class TestRecordAuthService:
         assert path.exists(mail)
         for line in open(mail).readlines():
             if "/confirm-password-reset/" in line:
-                token = line.split("/confirm-password-reset/", 1)[1].split('"')[0]
+                token = line.split("/confirm-password-reset/", 1)[1].split('"')[
+                    0
+                ]
         assert len(token) > 10
         assert client.collection("users").confirmPasswordReset(
             token, state.password, state.password
         )
-        client.collection("users").auth_with_password(state.email, state.password)
+        client.collection("users").auth_with_password(
+            state.email, state.password
+        )
 
     def test_delete_user(self, client: PocketBase, state):
         client.collection("users").delete(state.user.id)

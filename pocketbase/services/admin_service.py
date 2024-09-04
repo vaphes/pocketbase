@@ -1,8 +1,8 @@
 from __future__ import annotations
 
+from pocketbase.models.admin import Admin
 from pocketbase.models.utils.base_model import BaseModel
 from pocketbase.services.utils.crud_service import CrudService
-from pocketbase.models.admin import Admin
 from pocketbase.utils import validate_token
 
 
@@ -17,7 +17,7 @@ class AdminAuthResponse:
             setattr(self, key, value)
 
     @property
-    def is_valid(self)->bool:
+    def is_valid(self) -> bool:
         return validate_token(self.token)
 
 
@@ -33,14 +33,16 @@ class AdminService(CrudService):
         If the current `client.auth_store.model` matches with the updated id,
         then on success the `client.auth_store.model` will be updated with the result.
         """
-        item = super().update(id, body_params=body_params, query_params=query_params)
+        item = super().update(
+            id, body_params=body_params, query_params=query_params
+        )
         try:
             if (
                 self.client.auth_store.model.collection_id is not None
                 and item.id == self.client.auth_store.model.id
             ):
                 self.client.auth_store.save(self.client.auth_store.token, item)
-        except:
+        except Exception:
             pass
         return item
 
@@ -56,7 +58,7 @@ class AdminService(CrudService):
                 and item.id == self.client.auth_store.model.id
             ):
                 self.client.auth_store.save(self.client.auth_store.token, item)
-        except:
+        except Exception:
             pass
         return item
 
@@ -69,7 +71,11 @@ class AdminService(CrudService):
         return AdminAuthResponse(token=token, admin=admin, **response_data)
 
     def auth_with_password(
-        self, email: str, password: str, body_params: dict = {}, query_params: dict = {}
+        self,
+        email: str,
+        password: str,
+        body_params: dict = {},
+        query_params: dict = {},
     ) -> AdminAuthResponse:
         """
         Authenticate an admin account with its email and password

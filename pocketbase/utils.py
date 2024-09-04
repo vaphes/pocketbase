@@ -33,7 +33,9 @@ def normalize_base64(encoded_str):
 def validate_token(token: str) -> bool:
     if len(token.split(".")) != 3:
         return False
-    decoded_bytes = base64.urlsafe_b64decode(normalize_base64(token.split(".")[1]))
+    decoded_bytes = base64.urlsafe_b64decode(
+        normalize_base64(token.split(".")[1])
+    )
     decoded_str = decoded_bytes.decode("utf-8")
     data = json.loads(decoded_str)
     exp = data["exp"]
