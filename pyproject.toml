@@ -39,7 +39,7 @@ keywords = ["pocketbase", "sdk"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
-httpx = "^0.24.1"
+httpx = "^0.24"
 
 [tool.poetry.group.dev.dependencies]
 flake8 = "^5.0.4"
