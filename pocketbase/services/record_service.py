@@ -139,7 +139,9 @@ class RecordService(CrudService):
             self.client.auth_store.save(token, record)
         return RecordAuthResponse(token=token, record=record, **response_data)  # type: ignore
 
-    def list_auth_methods(self, query_params: dict | None) -> AuthMethodsList:
+    def list_auth_methods(
+        self, query_params: dict | None = None
+    ) -> AuthMethodsList:
         if query_params is None:
             query_params = {}
         """Returns all available collection auth methods."""
