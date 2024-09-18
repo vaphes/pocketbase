@@ -58,7 +58,7 @@ result = client.collection("example").create(
 
 These are the requirements for local development:
 
-* Python 3.7+
+* Python 3.9+
 * Poetry (https://python-poetry.org/)
 
 You can install locally:
