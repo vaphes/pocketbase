@@ -28,6 +28,7 @@ class RecordAuthResponse:
 @dataclass
 class AuthProviderInfo:
     name: str
+    display_name: str
     state: str
     code_verifier: str
     code_challenge: str
