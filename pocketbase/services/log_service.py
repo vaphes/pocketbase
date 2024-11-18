@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import datetime
 from dataclasses import dataclass
-from typing import Any, Union
+from typing import Any
 from urllib.parse import quote
 
 from pocketbase.models.log_request import LogRequest
@@ -14,7 +14,7 @@ from pocketbase.utils import to_datetime
 @dataclass
 class HourlyStats:
     total: int
-    date: Union[str, datetime.datetime]
+    date: str | datetime.datetime
 
 
 class LogService(BaseService):

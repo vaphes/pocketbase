@@ -1,8 +1,10 @@
-from typing import Sequence, Union
+from __future__ import annotations
+
+from collections.abc import Sequence
 
 from httpx._types import FileTypes
 
-FileUploadTypes = Union[FileTypes, Sequence[FileTypes]]
+FileUploadTypes = FileTypes | Sequence[FileTypes]
 
 
 class FileUpload:

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Any
+from typing import Any, Generic, TypeVar
 from urllib.parse import quote
 
 from pocketbase.errors import ClientResponseError
@@ -9,11 +9,10 @@ from pocketbase.models.utils.base_model import Model
 from pocketbase.models.utils.list_result import ListResult
 from pocketbase.services.utils.base_service import BaseService
 
-if TYPE_CHECKING:
-    pass
+T = TypeVar("T", bound=Model)
 
 
-class CrudService[T: Model](BaseService, ABC):
+class CrudService(Generic[T], BaseService, ABC):
     @abstractmethod
     def base_crud_path(self) -> str:
         """Base path for the crud actions (without trailing slash, eg. '/admins')."""
