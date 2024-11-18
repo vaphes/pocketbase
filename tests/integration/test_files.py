@@ -66,7 +66,7 @@ class TestFileService:
         rel = client.collection(state.coll.id).get_one(record.id)
         assert len(rel.image) == 3  # type: ignore
 
-        r = httpx.get(client.get_file_url(rel, fn, query_params={}))
+        r = httpx.get(client.files.get_url(rel, fn, query_params={}))
         assert r.status_code == 200
         assert r.content == bcontent
 
@@ -96,7 +96,7 @@ class TestFileService:
         rel = client.collection(state.coll.id).get_one(record.id)
         assert len(rel.image) == 1  # type: ignore
 
-        r = httpx.get(client.get_file_url(rel, rel.image[0], query_params={}))  # type: ignore
+        r = httpx.get(client.files.get_url(rel, rel.image[0], query_params={}))  # type: ignore
         assert r.status_code == 200
         assert r.content.decode("utf-8") == acontent
 
