@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, override
+from typing import Any
 
 from pocketbase.models.admin import Admin
 from pocketbase.services.utils.crud_service import CrudService
@@ -23,15 +23,12 @@ class AdminAuthResponse:
 
 
 class AdminService(CrudService[Admin]):
-    @override
     def decode(self, data: dict[str, Any]) -> Admin:
         return Admin(data)
 
-    @override
     def base_crud_path(self) -> str:
         return "/api/admins"
 
-    @override
     def update(
         self,
         id: str,
@@ -52,7 +49,6 @@ class AdminService(CrudService[Admin]):
             self.client.auth_store.save(self.client.auth_store.token, item)
         return item
 
-    @override
     def delete(
         self, id: str, query_params: dict[str, Any] | None = None
     ) -> bool:

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, override
+from typing import TYPE_CHECKING, Any
 from urllib.parse import quote, urlencode
 
 from pocketbase.models.record import Record
@@ -58,15 +58,12 @@ class RecordService(CrudService[Record]):
         super().__init__(client)
         self.collection_id_or_name = collection_id_or_name
 
-    @override
     def decode(self, data: dict[str, Any]) -> Record:
         return Record(data)
 
-    @override
     def base_crud_path(self) -> str:
         return self.base_collection_path() + "/records"
 
-    @override
     def update(
         self,
         id: str,
@@ -90,7 +87,6 @@ class RecordService(CrudService[Record]):
             self.client.auth_store.save(self.client.auth_store.token, item)
         return item
 
-    @override
     def delete(
         self, id: str, query_params: dict[str, Any] | None = None
     ) -> bool:
