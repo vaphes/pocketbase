@@ -2,8 +2,20 @@ from __future__ import annotations
 
 import datetime
 from abc import ABC
+from typing import Any, Protocol
 
 from pocketbase.utils import to_datetime
+
+
+class Model(Protocol):
+    id: str
+    created: str | datetime.datetime
+    updated: str | datetime.datetime
+
+    def load(self, data: dict[str, Any]) -> None: ...
+
+    @property
+    def is_new(self) -> bool: ...
 
 
 class BaseModel(ABC):
@@ -11,7 +23,7 @@ class BaseModel(ABC):
     created: str | datetime.datetime
     updated: str | datetime.datetime
 
-    def __init__(self, data: dict = {}) -> None:
+    def __init__(self, data: dict[str, Any] = {}) -> None:
         super().__init__()
         self.load(data)
 
@@ -21,7 +33,7 @@ class BaseModel(ABC):
     def __repr__(self) -> str:
         return self.__str__()
 
-    def load(self, data: dict) -> None:
+    def load(self, data: dict[str, Any]) -> None:
         """Loads `data` into the current model."""
         self.id = data.pop("id", "")
         self.created = to_datetime(data.pop("created", ""))

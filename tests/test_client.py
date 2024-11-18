@@ -12,4 +12,5 @@ def test_custom_headers(httpx_mock: HTTPXMock):
         client = PocketBase("http://testclient", http_client=http_client)
         _ = client.collection("users").get_list()
         request = httpx_mock.get_request()
+        assert request is not None
         assert request.headers["key"] == "value"

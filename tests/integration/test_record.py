@@ -57,7 +57,7 @@ class TestRecordService:
                 "title": bname,
             }
         )
-        assert state.record.title == bname
+        assert state.record.title == bname  # type: ignore
 
     def test_create_multiple_record(self, client: PocketBase, state):
         state.chained_records = [
@@ -95,8 +95,8 @@ class TestRecordService:
         state.get_record = client.collection(state.coll.id).get_one(
             state.record.id
         )
-        assert state.get_record.title is not None
-        assert state.record.title == state.get_record.title
+        assert state.get_record.title is not None  # type: ignore
+        assert state.record.title == state.get_record.title  # type: ignore
         assert not state.get_record.is_new
         assert state.get_record.id in f"{state.get_record}"
         assert state.get_record.id in repr(state.get_record)
@@ -161,7 +161,7 @@ class TestRecordService:
         items = client.collection(state.coll.id).get_full_list(batch=1)
         cnt = 0
         for i in items:
-            if i.title == state.get_record.title:
+            if i.title == state.get_record.title:  # type: ignore
                 cnt += 1
         assert cnt == 1
 
@@ -177,7 +177,7 @@ class TestRecordService:
         state.get_record = client.collection(state.coll.id).update(
             state.record.id, {"title": uuid4().hex}
         )
-        assert state.record.title != state.get_record.title
+        assert state.record.title != state.get_record.title  # type: ignore
 
     def test_delete_record(self, client: PocketBase, state):
         client.collection(state.coll.id).delete(state.record.id)
@@ -188,7 +188,7 @@ class TestRecordService:
 
     def test_delete_nonexisting_exception(self, client: PocketBase, state):
         with pytest.raises(ClientResponseError) as exc:
-            client.collection(state.coll.id).delete(uuid4().hex, uuid4().hex)
+            client.collection(state.coll.id).delete(uuid4().hex, uuid4().hex)  # type: ignore
         assert exc.value.status == 404  # delete nonexisting
 
     def test_get_nonexisting_exception(self, client: PocketBase, state):

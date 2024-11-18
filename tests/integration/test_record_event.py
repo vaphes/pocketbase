@@ -24,7 +24,7 @@ class TestRecordEventService:
                 "schema": schema,
             }
         )
-        state.c: RecordService = client.collection(state.coll.id)
+        state.c: RecordService = client.collection(state.coll.id)  # type: ignore
 
     def test_subscribe_event(self, client: PocketBase, state):
         c: RecordService = state.c
@@ -38,7 +38,7 @@ class TestRecordEventService:
         for _ in range(2):
             state.record = state.c.create({"title": uuid4().hex})
             sleep(0.1)
-            e: MessageData = state.test_subscribe_event
+            e: MessageData = state.test_subscribe_event  # type: ignore
             assert e.record.collection_id == state.coll.id
             assert e.record.id == state.record.id
         c.unsubscribe()
@@ -49,7 +49,7 @@ class TestRecordEventService:
             state.c.create({"title": uuid4().hex})
             sleep(0.1)
             # e should now not be mutated any more as we are unsubscribed
-            e: MessageData = state.test_subscribe_event
+            e: MessageData = state.test_subscribe_event  # type: ignore
             assert e.record.collection_id == state.coll.id
             assert e.record.id == state.record.id
 
@@ -71,10 +71,10 @@ class TestRecordEventService:
         for _ in range(2):
             r = c.update(r.id, {"title": uuid4().hex})
             sleep(0.1)
-            e: MessageData = state.test_subscribe_event2
+            e: MessageData = state.test_subscribe_event2  # type: ignore
             assert e.record.collection_id == state.coll.id
             assert e.record.id == r.id
-            state.test_subscribe_event2.record.id = "abc"
+            state.test_subscribe_event2.record.id = "abc"  # type: ignore
         c.unsubscribe(r.id, r.id)
         sleep(0.1)
 
@@ -82,6 +82,6 @@ class TestRecordEventService:
             c.update(r.id, {"title": uuid4().hex})
             sleep(0.1)
             # e should now not be mutated any more as we are unsubscribed
-            e: MessageData = state.test_subscribe_event2
+            e: MessageData = state.test_subscribe_event2  # type: ignore
             assert e.record.collection_id == state.coll.id
             assert e.record.id == "abc"

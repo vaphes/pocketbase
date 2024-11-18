@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Any
+
 from pocketbase.models.utils.base_model import BaseModel
 from pocketbase.models.utils.schema_field import SchemaField
 
@@ -14,9 +16,9 @@ class Collection(BaseModel):
     create_rule: str | None
     update_rule: str | None
     delete_rule: str | None
-    options: dict
+    options: dict[str, Any]
 
-    def load(self, data: dict) -> None:
+    def load(self, data: dict[str, Any]) -> None:
         super().load(data)
         self.name = data.get("name", "")
         self.system = data.get("system", False)

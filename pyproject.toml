@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pocketbase"
-version = "0.12.3"
+version = "0.13.0"
 description = "PocketBase SDK for python."
 authors = ["Vithor Jaeger <vaphes@gmail.com>", "Max Amling <max-amling@web.de>"]
 readme = "README.md"
@@ -31,7 +31,7 @@ ruff = "^0.6.5"
 coveralls = { version = "^4.0.1", python = "<3.13" }
 
 [tool.ruff]
-line-length = 120
+line-length = 80
 target-version = "py39"
 
 [build-system]

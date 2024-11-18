@@ -1,9 +1,24 @@
 from __future__ import annotations
 
 from abc import ABC
+from typing import Protocol
 
 from pocketbase.models.admin import Admin
 from pocketbase.models.record import Record
+
+
+class AuthStore(Protocol):
+    @property
+    def token(self) -> str: ...
+
+    @property
+    def model(self) -> Record | Admin | None: ...
+
+    def save(
+        self, token: str = "", model: Record | Admin | None = None
+    ) -> None: ...
+
+    def clear(self) -> None: ...
 
 
 class BaseAuthStore(ABC):
@@ -12,7 +27,7 @@ class BaseAuthStore(ABC):
     PocketBase AuthStore implementations.
     """
 
-    base_token: str | None
+    base_token: str
     base_model: Record | Admin | None
 
     def __init__(
@@ -23,7 +38,7 @@ class BaseAuthStore(ABC):
         self.base_model = base_model
 
     @property
-    def token(self) -> str | None:
+    def token(self) -> str:
         """Retrieves the stored token (if any)."""
         return self.base_token
 
@@ -42,5 +57,5 @@ class BaseAuthStore(ABC):
 
     def clear(self) -> None:
         """Removes the stored token and model data form the auth store."""
-        self.base_token = None
+        self.base_token = ""
         self.base_model = None

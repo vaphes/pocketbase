@@ -2,11 +2,15 @@ from __future__ import annotations
 
 import dataclasses
 import json
-from typing import Callable, List
+from collections.abc import Callable
+from typing import TYPE_CHECKING, Any
 
 from pocketbase.models.record import Record
 from pocketbase.services.utils.base_service import BaseService
 from pocketbase.services.utils.sse import Event, SSEClient
+
+if TYPE_CHECKING:
+    from pocketbase.client import Client
 
 
 @dataclasses.dataclass
@@ -16,11 +20,11 @@ class MessageData:
 
 
 class RealtimeService(BaseService):
-    subscriptions: dict
+    subscriptions: dict[str, Callable[[Any], None]]
     client_id: str = ""
     event_source: SSEClient | None = None
 
-    def __init__(self, client) -> None:
+    def __init__(self, client: Client) -> None:
         super().__init__(client)
         self.subscriptions = {}
         self.client_id = ""
@@ -49,7 +53,7 @@ class RealtimeService(BaseService):
         The related sse connection will be autoclosed if after the
         unsubscribe operation there are no active subscriptions left.
         """
-        to_unsubscribe = []
+        to_unsubscribe: list[str] = []
         for sub in self.subscriptions:
             if sub.startswith(subscription_prefix):
                 to_unsubscribe.append(sub)
@@ -57,7 +61,7 @@ class RealtimeService(BaseService):
             return
         return self.unsubscribe(to_unsubscribe)
 
-    def unsubscribe(self, subscriptions: List[str] | None = None) -> None:
+    def unsubscribe(self, subscriptions: list[str] | None = None) -> None:
         """
         Unsubscribe from a subscription.
 
@@ -75,7 +79,7 @@ class RealtimeService(BaseService):
             # remove each passed subscription
             found = False
             for sub in subscriptions:
-                if sub in self.subscriptions:
+                if sub in self.subscriptions and self.event_source is not None:
                     found = True
                     self.event_source.remove_event_listener(
                         sub, self.subscriptions[sub]
@@ -123,14 +127,14 @@ class RealtimeService(BaseService):
         return True
 
     def _add_subscription_listeners(self) -> None:
-        if not self.event_source:
+        if self.event_source is None:
             return
         self._remove_subscription_listeners()
         for subscription, callback in self.subscriptions.items():
             self.event_source.add_event_listener(subscription, callback)
 
     def _remove_subscription_listeners(self) -> None:
-        if not self.event_source:
+        if self.event_source is None:
             return
         for subscription, callback in self.subscriptions.items():
             self.event_source.remove_event_listener(subscription, callback)
@@ -149,7 +153,7 @@ class RealtimeService(BaseService):
     def _disconnect(self) -> None:
         self._remove_subscription_listeners()
         self.client_id = ""
-        if not self.event_source:
+        if self.event_source is None:
             return
         self.event_source.remove_event_listener(
             "PB_CONNECT", self._connect_handler

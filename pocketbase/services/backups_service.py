@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+from typing import Any
+
 from pocketbase.models import Backup, FileUpload
 from pocketbase.services.utils import BaseService
 
 
 class BackupsService(BaseService):
-    def decode(self, data: dict) -> Backup:
+    def decode(self, data: dict[str, Any]) -> Backup:
         return Backup(data)
 
     def base_path(self) -> str:
@@ -18,13 +20,13 @@ class BackupsService(BaseService):
             {"method": "POST", "body": {"name": name}},
         )
 
-    def get_full_list(self, query_params: dict = {}) -> list[Backup]:
+    def get_full_list(self, query_params: dict[str, Any] = {}) -> list[Backup]:
         response_data = self.client.send(
             self.base_path(), {"method": "GET", "params": query_params}
         )
         return [self.decode(item) for item in response_data]
 
-    def download(self, key: str, file_token: str = None) -> bytes:
+    def download(self, key: str, file_token: str | None = None) -> bytes:
         if file_token is None:
             file_token = self.client.get_file_token()
         return self.client.send_raw(

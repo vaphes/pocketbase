@@ -1,40 +1,30 @@
 from __future__ import annotations
 
 from typing import Any, Dict
-from urllib.parse import quote, urlencode
 
 import httpx
 
+from pocketbase.errors import ClientResponseError
 from pocketbase.models import FileUpload
 from pocketbase.models.record import Record
 from pocketbase.services.admin_service import AdminService
 from pocketbase.services.backups_service import BackupsService
 from pocketbase.services.collection_service import CollectionService
+from pocketbase.services.files_service import FileService
+from pocketbase.services.health_service import HealthService
 from pocketbase.services.log_service import LogService
 from pocketbase.services.realtime_service import RealtimeService
 from pocketbase.services.record_service import RecordService
 from pocketbase.services.settings_service import SettingsService
-from pocketbase.stores.base_auth_store import BaseAuthStore
-from pocketbase.utils import ClientResponseError
+from pocketbase.stores.base_auth_store import AuthStore, BaseAuthStore
 
 
 class Client:
-    base_url: str
-    lang: str
-    auth_store: BaseAuthStore
-    settings: SettingsService
-    admins: AdminService
-    collections: CollectionService
-    records: RecordService
-    logs: LogService
-    realtime: RealtimeService
-    record_service: Dict[str, RecordService]
-
     def __init__(
         self,
         base_url: str = "/",
         lang: str = "en-US",
-        auth_store: BaseAuthStore | None = None,
+        auth_store: AuthStore | None = None,
         timeout: float = 120,
         http_client: httpx.Client | None = None,
     ) -> None:
@@ -47,16 +37,12 @@ class Client:
         self.admins = AdminService(self)
         self.backups = BackupsService(self)
         self.collections = CollectionService(self)
+        self.files = FileService(self)
+        self.health = HealthService(self)
         self.logs = LogService(self)
         self.settings = SettingsService(self)
         self.realtime = RealtimeService(self)
-        self.record_service = {}
-
-    def collection(self, id_or_name: str) -> RecordService:
-        """Returns the RecordService associated to the specified collection."""
-        if id_or_name not in self.record_service:
-            self.record_service[id_or_name] = RecordService(self, id_or_name)
-        return self.record_service[id_or_name]
+        self.record_service: Dict[str, RecordService] = {}
 
     def _send(self, path: str, req_config: dict[str, Any]) -> httpx.Response:
         """Sends an api http request returning response object."""
@@ -74,9 +60,9 @@ class Client:
         method = config.get("method", "GET")
         params = config.get("params", None)
         headers = config.get("headers", None)
-        body = config.get("body", None)
+        body: dict[str, Any] | None = config.get("body", None)
         # handle requests including files as multipart:
-        data = {}
+        data: dict[str, Any] | None = {}
         files = ()
         for k, v in (body if isinstance(body, dict) else {}).items():
             if isinstance(v, FileUpload):
@@ -108,6 +94,12 @@ class Client:
             )
         return response
 
+    def collection(self, id_or_name: str) -> RecordService:
+        """Returns the RecordService associated to the specified collection."""
+        if id_or_name not in self.record_service:
+            self.record_service[id_or_name] = RecordService(self, id_or_name)
+        return self.record_service[id_or_name]
+
     def send_raw(self, path: str, req_config: dict[str, Any]) -> bytes:
         """Sends an api http request returning raw bytes response."""
         response = self._send(path, req_config)
@@ -123,30 +115,11 @@ class Client:
         if response.status_code >= 400:
             raise ClientResponseError(
                 f"Response error. Status code:{response.status_code}",
-                url=response.url,
+                url=str(response.url),
                 status=response.status_code,
                 data=data,
             )
         return data
-
-    def get_file_url(self, record: Record, filename: str, query_params: dict):
-        parts = [
-            "api",
-            "files",
-            quote(record.collection_id or record.collection_name),
-            quote(record.id),
-            quote(filename),
-        ]
-        result = self.build_url("/".join(parts))
-        if len(query_params) != 0:
-            params: str = urlencode(query_params)
-            result += "&" if "?" in result else "?"
-            result += params
-        return result
-
-    def get_file_token(self):
-        res = self.send("/api/files/token", req_config={"method": "POST"})
-        return res["token"]
 
     def build_url(self, path: str) -> str:
         url = self.base_url
@@ -155,3 +128,16 @@ class Client:
         if path.startswith("/"):
             path = path[1:]
         return url + path
+
+    # TODO: add deprecated decorator
+    def get_file_url(
+        self,
+        record: Record,
+        filename: str,
+        query_params: dict[str, Any] | None = None,
+    ):
+        return self.files.get_url(record, filename, query_params)
+
+    # TODO: add deprecated decorator
+    def get_file_token(self) -> str:
+        return self.files.get_token()

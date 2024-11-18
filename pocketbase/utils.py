@@ -4,7 +4,8 @@ import base64
 import datetime
 import json
 import re
-from typing import Any
+
+from .errors import ClientResponseError  # noqa: F401
 
 
 def camel_to_snake(name: str) -> str:
@@ -22,7 +23,7 @@ def to_datetime(
         return str_datetime
 
 
-def normalize_base64(encoded_str):
+def normalize_base64(encoded_str: str):
     encoded_str = encoded_str.strip()
     padding_needed = len(encoded_str) % 4
     if padding_needed:
@@ -46,19 +47,3 @@ def validate_token(token: str) -> bool:
             return False
     current_time = datetime.datetime.now().timestamp()
     return exp > current_time
-
-
-class ClientResponseError(Exception):
-    url: str = ""
-    status: int = 0
-    data: dict = {}
-    is_abort: bool = False
-    original_error: Any | None = None
-
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args)
-        self.url = kwargs.get("url", "")
-        self.status = kwargs.get("status", 0)
-        self.data = kwargs.get("data", {})
-        self.is_abort = kwargs.get("is_abort", False)
-        self.original_error = kwargs.get("original_error", None)

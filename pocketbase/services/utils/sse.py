@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import dataclasses
 import threading
-from typing import Callable
+from collections.abc import Callable
+from typing import Any
 
 import httpx
 
@@ -24,11 +25,11 @@ class EventLoop(threading.Thread):
         self,
         url: str,
         method: str = "GET",
-        headers: dict | None = None,
-        payload: dict | None = None,
-        encoding="utf-8",
-        listeners: dict[str, Callable] | None = None,
-        **kwargs,
+        headers: dict[str, Any] | None = None,
+        payload: dict[str, Any] | None = None,
+        encoding: str = "utf-8",
+        listeners: dict[str, Callable[[Event], Any]] | None = None,
+        **kwargs: Any,
     ):
         threading.Thread.__init__(self, **kwargs)
         self.kill = False
@@ -101,16 +102,16 @@ class EventLoop(threading.Thread):
 class SSEClient:
     """Implementation of a server side event client"""
 
-    _listeners: dict = {}
-    _loop_thread: threading.Thread | None = None
+    _listeners: dict[str, Callable[[Event], Any]]
+    _loop_thread: EventLoop
 
     def __init__(
         self,
         url: str,
         method: str = "GET",
-        headers: dict | None = None,
-        payload: dict | None = None,
-        encoding="utf-8",
+        headers: dict[str, Any] | None = None,
+        payload: dict[str, Any] | None = None,
+        encoding: str = "utf-8",
     ) -> None:
         self._listeners = {}
         self._loop_thread = EventLoop(
@@ -126,13 +127,13 @@ class SSEClient:
         self._loop_thread.start()
 
     def add_event_listener(
-        self, event: str, callback: Callable[[Event], None]
+        self, event: str, callback: Callable[[Any], None]
     ) -> None:
         self._listeners[event] = callback
         self._loop_thread.listeners = self._listeners
 
     def remove_event_listener(
-        self, event: str, callback: Callable[[Event], None]
+        self, event: str, callback: Callable[[Any], None]
     ) -> None:
         if event in self._listeners:
             self._listeners.pop(event)

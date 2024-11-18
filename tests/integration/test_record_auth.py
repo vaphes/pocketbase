@@ -46,7 +46,7 @@ class TestRecordAuthService:
         sleep(0.2)
         assert client.collection("users").requestVerification(state.email)
         sleep(0.2)
-        mail = environ.get("TMP_EMAIL_DIR") + f"/{state.email}"
+        mail = environ.get("TMP_EMAIL_DIR", "") + f"/{state.email}"
         assert path.exists(mail)
         print("START")
         for line in open(mail).readlines():
@@ -74,7 +74,7 @@ class TestRecordAuthService:
         new_email = "%s@%s.com" % (uuid4().hex[:16], uuid4().hex[:16])
         assert client.collection("users").requestEmailChange(new_email)
         sleep(0.1)
-        mail = environ.get("TMP_EMAIL_DIR") + f"/{new_email}"
+        mail = environ.get("TMP_EMAIL_DIR", "") + f"/{new_email}"
         assert path.exists(mail)
         for line in open(mail).readlines():
             if "/confirm-email-change/" in line:
@@ -91,7 +91,7 @@ class TestRecordAuthService:
         state.password = uuid4().hex
         assert client.collection("users").requestPasswordReset(state.email)
         sleep(0.1)
-        mail = environ.get("TMP_EMAIL_DIR") + f"/{state.email}"
+        mail = environ.get("TMP_EMAIL_DIR", "") + f"/{state.email}"
         assert path.exists(mail)
         for line in open(mail).readlines():
             if "/confirm-password-reset/" in line:

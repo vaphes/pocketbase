@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+from typing import Any, override
+
 from pocketbase.models.admin import Admin
-from pocketbase.models.utils.base_model import BaseModel
 from pocketbase.services.utils.crud_service import CrudService
 from pocketbase.utils import validate_token
 
@@ -10,7 +11,7 @@ class AdminAuthResponse:
     token: str
     admin: Admin
 
-    def __init__(self, token: str, admin: Admin, **kwargs) -> None:
+    def __init__(self, token: str, admin: Admin, **kwargs: Any) -> None:
         self.token = token
         self.admin = admin
         for key, value in kwargs.items():
@@ -21,14 +22,22 @@ class AdminAuthResponse:
         return validate_token(self.token)
 
 
-class AdminService(CrudService):
-    def decode(self, data: dict) -> BaseModel:
+class AdminService(CrudService[Admin]):
+    @override
+    def decode(self, data: dict[str, Any]) -> Admin:
         return Admin(data)
 
+    @override
     def base_crud_path(self) -> str:
         return "/api/admins"
 
-    def update(self, id: str, body_params: dict, query_params={}) -> BaseModel:
+    @override
+    def update(
+        self,
+        id: str,
+        body_params: dict[str, Any] | None = None,
+        query_params: dict[str, Any] | None = None,
+    ) -> Admin:
         """
         If the current `client.auth_store.model` matches with the updated id,
         then on success the `client.auth_store.model` will be updated with the result.
@@ -36,33 +45,30 @@ class AdminService(CrudService):
         item = super().update(
             id, body_params=body_params, query_params=query_params
         )
-        try:
-            if (
-                self.client.auth_store.model.collection_id is not None
-                and item.id == self.client.auth_store.model.id
-            ):
-                self.client.auth_store.save(self.client.auth_store.token, item)
-        except Exception:
-            pass
+        model = self.client.auth_store.model
+        if not isinstance(model, Admin):
+            return item
+        if item.id == model.id:
+            self.client.auth_store.save(self.client.auth_store.token, item)
         return item
 
-    def delete(self, id: str, query_params={}) -> BaseModel:
+    @override
+    def delete(
+        self, id: str, query_params: dict[str, Any] | None = None
+    ) -> bool:
         """
         If the current `client.auth_store.model` matches with the deleted id,
         then on success the `client.auth_store` will be cleared.
         """
-        item = super().delete(id, query_params=query_params)
-        try:
-            if (
-                self.client.auth_store.model.collection_id is not None
-                and item.id == self.client.auth_store.model.id
-            ):
-                self.client.auth_store.save(self.client.auth_store.token, item)
-        except Exception:
-            pass
-        return item
+        success = super().delete(id, query_params=query_params)
+        model = self.client.auth_store.model
+        if not isinstance(model, Admin):
+            return success
+        if success:
+            self.client.auth_store.clear()
+        return success
 
-    def auth_response(self, response_data: dict) -> AdminAuthResponse:
+    def auth_response(self, response_data: dict[str, Any]) -> AdminAuthResponse:
         """Prepare successful authorize response."""
         admin = self.decode(response_data.pop("admin", {}))
         token = response_data.pop("token", "")
@@ -74,8 +80,8 @@ class AdminService(CrudService):
         self,
         email: str,
         password: str,
-        body_params: dict = {},
-        query_params: dict = {},
+        body_params: dict[str, Any] | None = None,
+        query_params: dict[str, Any] | None = None,
     ) -> AdminAuthResponse:
         """
         Authenticate an admin account with its email and password
@@ -83,6 +89,7 @@ class AdminService(CrudService):
 
         On success this method automatically updates the client's AuthStore data.
         """
+        body_params = body_params or {}
         body_params.update({"identity": email, "password": password})
         response_data = self.client.send(
             self.base_crud_path() + "/auth-with-password",
@@ -95,8 +102,10 @@ class AdminService(CrudService):
         )
         return self.auth_response(response_data)
 
-    def authRefresh(
-        self, body_params: dict = {}, query_params: dict = {}
+    def auth_refresh(
+        self,
+        body_params: dict[str, Any] | None = None,
+        query_params: dict[str, Any] | None = None,
     ) -> AdminAuthResponse:
         """
         Refreshes the current admin authenticated instance and
@@ -111,10 +120,14 @@ class AdminService(CrudService):
             )
         )
 
-    def requestPasswordReset(
-        self, email: str, body_params: dict = {}, query_params: dict = {}
+    def request_password_reset(
+        self,
+        email: str,
+        body_params: dict[str, Any] | None = None,
+        query_params: dict[str, Any] | None = None,
     ) -> bool:
         """Sends admin password reset request."""
+        body_params = body_params or {}
         body_params.update({"email": email})
         self.client.send(
             self.base_crud_path() + "/request-password-reset",
@@ -126,15 +139,16 @@ class AdminService(CrudService):
         )
         return True
 
-    def confirmPasswordReset(
+    def confirm_password_reset(
         self,
         password_reset_token: str,
         password: str,
         password_confirm: str,
-        body_params: dict = {},
-        query_params: dict = {},
+        body_params: dict[str, Any] | None = None,
+        query_params: dict[str, Any] | None = None,
     ) -> bool:
         """Confirms admin password reset request."""
+        body_params = body_params or {}
         body_params.update(
             {
                 "token": password_reset_token,
@@ -151,3 +165,50 @@ class AdminService(CrudService):
             },
         )
         return True
+
+    # TODO: add deprecated decorator
+    def authRefresh(
+        self,
+        body_params: dict[str, Any] | None = None,
+        query_params: dict[str, Any] | None = None,
+    ) -> AdminAuthResponse:
+        """
+        Deprecated: Use `auth_refresh` instead.
+        """
+        return self.auth_refresh(
+            body_params=body_params, query_params=query_params
+        )
+
+    # TODO: add deprecated decorator
+    def requestPasswordReset(
+        self,
+        email: str,
+        body_params: dict[str, Any] | None = None,
+        query_params: dict[str, Any] | None = None,
+    ) -> bool:
+        """
+        Deprecated: Use `request_password_reset` instead.
+        """
+        return self.request_password_reset(
+            email, body_params=body_params, query_params=query_params
+        )
+
+    # TODO: add deprecated decorator
+    def confirmPasswordReset(
+        self,
+        password_reset_token: str,
+        password: str,
+        password_confirm: str,
+        body_params: dict[str, Any] | None = None,
+        query_params: dict[str, Any] | None = None,
+    ) -> bool:
+        """
+        Deprecated: Use `confirm_password_reset` instead.
+        """
+        return self.confirm_password_reset(
+            password_reset_token,
+            password,
+            password_confirm,
+            body_params=body_params,
+            query_params=query_params,
+        )

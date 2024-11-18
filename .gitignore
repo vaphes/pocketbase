@@ -3,6 +3,7 @@
 
 
 .vscode/
+.ruff_cache/
 
 ### Python ###
 # Byte-compiled / optimized / DLL files

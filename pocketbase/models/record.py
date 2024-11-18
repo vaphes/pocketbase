@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Any
+
 from pocketbase.models.utils.base_model import BaseModel
 from pocketbase.utils import camel_to_snake
 
@@ -7,9 +9,9 @@ from pocketbase.utils import camel_to_snake
 class Record(BaseModel):
     collection_id: str
     collection_name: str
-    expand: dict
+    expand: dict[str, Any]
 
-    def load(self, data: dict) -> None:
+    def load(self, data: dict[str, Any]) -> None:
         super().load(data)
         self.expand = {}
         for key, value in data.items():
@@ -18,9 +20,9 @@ class Record(BaseModel):
         self.load_expanded()
 
     @classmethod
-    def parse_expanded(cls, data: dict):
+    def parse_expanded(cls, data: Any):
         if isinstance(data, list):
-            return [cls(a) for a in data]
+            return [cls(a) for a in data]  # type: ignore
         return cls(data)
 
     def load_expanded(self) -> None:

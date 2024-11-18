@@ -6,8 +6,8 @@ FileUploadTypes = Union[FileTypes, Sequence[FileTypes]]
 
 
 class FileUpload:
-    def __init__(self, *args):
-        self.files: FileUploadTypes = args
+    def __init__(self, *args: FileUploadTypes):
+        self.files = args
 
     def get(self, key: str):
         if isinstance(self.files[0], Sequence) and not isinstance(

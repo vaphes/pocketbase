@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import datetime
 from dataclasses import dataclass
-from typing import Union
+from typing import Any, Union
 from urllib.parse import quote
 
 from pocketbase.models.log_request import LogRequest
@@ -19,8 +19,11 @@ class HourlyStats:
 
 class LogService(BaseService):
     def get_list(
-        self, page: int = 1, per_page: int = 30, query_params: dict = {}
-    ) -> ListResult:
+        self,
+        page: int = 1,
+        per_page: int = 30,
+        query_params: dict[str, Any] = {},
+    ) -> ListResult[LogRequest]:
         """Returns paginated logged requests list."""
         query_params.update({"page": page, "perPage": per_page})
         response_data = self.client.send(
@@ -40,7 +43,7 @@ class LogService(BaseService):
             items,
         )
 
-    def get(self, id: str, query_params: dict = {}) -> LogRequest:
+    def get(self, id: str, query_params: dict[str, Any] = {}) -> LogRequest:
         """Returns a single logged request by its id."""
         return LogRequest(
             self.client.send(
@@ -49,7 +52,7 @@ class LogService(BaseService):
             )
         )
 
-    def get_stats(self, query_params: dict = {}) -> list[HourlyStats]:
+    def get_stats(self, query_params: dict[str, Any] = {}) -> list[HourlyStats]:
         """Returns request logs statistics."""
         return [
             HourlyStats(total=stat["total"], date=to_datetime(stat["date"]))

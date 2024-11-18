@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import datetime
+from typing import Any
 
 from pocketbase.models.utils import BaseModel
 from pocketbase.utils import to_datetime
@@ -11,7 +12,7 @@ class Backup(BaseModel):
     modified: str | datetime.datetime
     size: int
 
-    def load(self, data: dict) -> None:
+    def load(self, data: dict[str, Any]) -> None:
         super().load(data)
         self.key = data.get("key", "")
         self.modified = to_datetime(data.pop("modified", ""))

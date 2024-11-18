@@ -26,7 +26,7 @@ class TestLocalAuthStore:
     def test_load(self, state):
         store = LocalAuthStore(filepath=state.tmp)
         assert store.token == state.token
-        assert store.model.email == state.admin.email
+        assert store.model.email == state.admin.email  # type: ignore
 
     def test_clear(self, state):
         store = LocalAuthStore(filepath=state.tmp)

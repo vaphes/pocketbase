@@ -28,7 +28,7 @@ class TestSettingsService:
             f"settings@{addr}.com", "verification"
         )
         assert path.exists(
-            environ.get("TMP_EMAIL_DIR") + f"/settings@{addr}.com"
+            environ.get("TMP_EMAIL_DIR", "") + f"/settings@{addr}.com"
         )
 
     def test_s3(self, client: PocketBase, state):

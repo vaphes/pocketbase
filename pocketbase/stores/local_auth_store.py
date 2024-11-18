@@ -26,10 +26,10 @@ class LocalAuthStore(BaseAuthStore):
         self.complete_filepath = os.path.join(filepath, filename)
 
     @property
-    def token(self) -> str | None:
+    def token(self) -> str:
         data = self._storage_get(self.complete_filepath)
         if not data or "token" not in data:
-            return None
+            return ""
         return data["token"]
 
     @property
