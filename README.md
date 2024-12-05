@@ -14,7 +14,7 @@ This is in early development, and at first is just a translation of <a href="htt
 Install PocketBase using PIP:
 
 ```shell
-DISABLED
+python3 -m pip install pocketbase
 ```
 
 ## Usage
