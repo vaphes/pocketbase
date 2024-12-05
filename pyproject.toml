@@ -1,13 +1,13 @@
 [tool.poetry]
-name = "pocketbase"
+name = "vrcband-pocketbase"
 version = "0.13.2"
 description = "PocketBase SDK for python."
-authors = ["Vithor Jaeger <vaphes@gmail.com>", "Max Amling <max-amling@web.de>"]
+authors = ["Vithor Jaeger <vaphes@gmail.com>", "Max Amling <max-amling@web.de>, FTTristan <webmaster@vrcband.com>"]
 readme = "README.md"
 license = "MIT"
 keywords = ["pocketbase", "sdk"]
-homepage = "https://github.com/vaphes/pocketbase"
-repository = "https://github.com/vaphes/pocketbase"
+homepage = "https://github.com/Fttristan/pocketbase"
+repository = "https://github.com/Fttristan/pocketbase"
 classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
