@@ -20,3 +20,15 @@ class ClientResponseError(Exception):
         self.data = data or {}
         self.is_abort = is_abort
         self.original_error = original_error
+
+    def __str__(self) -> str:
+        base_message = super().__str__() or "ClientResponseError"
+        details = [
+            f"Message: {base_message}",
+            f"URL: {self.url or 'N/A'}",
+            f"Status: {self.status or 'N/A'}",
+            f"Data: {self.data or 'N/A'}",
+            f"Is Abort: {self.is_abort}",
+            f"Original Error: {self.original_error or 'N/A'}",
+        ]
+        return "\n".join(details)
