@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pocketbase"
-version = "0.14.0"
+version = "0.15.0"
 description = "PocketBase SDK for python."
 authors = ["Vithor Jaeger <vaphes@gmail.com>", "Max Amling <max-amling@web.de>"]
 readme = "README.md"
