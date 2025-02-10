@@ -3,13 +3,13 @@ from __future__ import annotations
 from typing import Any
 
 from pocketbase.models.utils.base_model import BaseModel
-from pocketbase.models.utils.schema_field import SchemaField
+from pocketbase.models.utils.collection_field import CollectionField
 
 
 class Collection(BaseModel):
     name: str
     type: str
-    schema: list[SchemaField]
+    fields: list[CollectionField]
     system: bool
     list_rule: str | None
     view_rule: str | None
@@ -32,11 +32,13 @@ class Collection(BaseModel):
         self.update_rule = data.get("updateRule", None)
         self.delete_rule = data.get("deleteRule", "")
 
-        # schema
-        schema = data.get("schema", [])
-        self.schema = []
-        for field in schema:
-            self.schema.append(SchemaField(**field))
+        # fields
+        fields = data.get("fields", [])
+        self.fields = []
+        for field in fields:
+            field["auto_generate_pattern"] = field.pop("autogeneratePattern", None)
+            field["primary_key"] = field.pop("primaryKey", False)
+            self.fields.append(CollectionField(**field))
 
     def is_base(self):
         return self.type == "base"

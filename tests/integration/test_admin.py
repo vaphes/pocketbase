@@ -77,7 +77,7 @@ def test_invalid_login_exception(client):
 
 
 def test_connection_error_exception():
-    client = PocketBase("http://127.0.0.2:9090")
+    client = PocketBase("http://127.0.0.2:9090", timeout=1)
     with pytest.raises(ClientResponseError) as exc:
         client.admins.auth_with_password(uuid4().hex, uuid4().hex)
     assert isinstance(exc.value, ClientResponseError)
