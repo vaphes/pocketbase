@@ -27,12 +27,14 @@ class Client:
         auth_store: AuthStore | None = None,
         timeout: float = 120,
         http_client: httpx.Client | None = None,
+        auto_snake_case: bool = True,
     ) -> None:
         self.base_url = base_url
         self.lang = lang
         self.auth_store = auth_store or BaseAuthStore()  # LocalAuthStore()
         self.timeout = timeout
         self.http_client = http_client or httpx.Client()
+        self.auto_snake_case = auto_snake_case
         # services
         self.admins = AdminService(self)
         self.backups = BackupsService(self)
