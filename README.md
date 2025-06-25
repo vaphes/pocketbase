@@ -54,6 +54,16 @@ result = client.collection("example").create(
 ```
 > More detailed API docs and copy-paste examples could be found in the [API documentation for each service](https://pocketbase.io/docs/api-authentication). Just remember to 'pythonize it' 🙃.
 
+---
+
+**Note:** By default, camelCase (or any other key style) from the API is converted to snake_case in Python. You can keep the original keys by setting `auto_snake_case=False` when creating the client.
+
+```python
+from pocketbase import Client
+client = Client(auto_snake_case=False)
+# Fields will keep their original names from the API
+```
+
 ## Development
 
 These are the requirements for local development:
