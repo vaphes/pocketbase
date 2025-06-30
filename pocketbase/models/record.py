@@ -15,7 +15,11 @@ class Record(BaseModel):
         super().load(data)
         self.expand = {}
         for key, value in data.items():
-            key = camel_to_snake(key, getattr(self, 'client', None) and getattr(self.client, 'auto_snake_case', True)).replace("@", "")
+            key = camel_to_snake(
+                key,
+                getattr(self, "client", None)
+                and getattr(self.client, "auto_snake_case", True),
+            ).replace("@", "")
             setattr(self, key, value)
         self.load_expanded()
 

@@ -36,7 +36,9 @@ class Collection(BaseModel):
         fields = data.get("fields", [])
         self.fields = []
         for field in fields:
-            field["auto_generate_pattern"] = field.pop("autogeneratePattern", None)
+            field["auto_generate_pattern"] = field.pop(
+                "autogeneratePattern", None
+            )
             field["primary_key"] = field.pop("primaryKey", False)
             self.fields.append(CollectionField(**field))
 

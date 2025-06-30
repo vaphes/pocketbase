@@ -179,7 +179,9 @@ class RecordService(CrudService[Record]):
 
         def apply_pythonic_keys(ap: dict[str, Any]) -> dict[str, Any]:
             pythonic_keys_ap = {
-                camel_to_snake(key, getattr(self.client, 'auto_snake_case', True)).replace("@", ""): value
+                camel_to_snake(
+                    key, getattr(self.client, "auto_snake_case", True)
+                ).replace("@", ""): value
                 for key, value in ap.items()
             }
             return pythonic_keys_ap

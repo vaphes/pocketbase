@@ -19,8 +19,12 @@ def state() -> State:
 def client() -> PocketBase:
     try:
         url = os.getenv("POCKETBASE_URL", "http://127.0.0.1:8090")
-        email = os.getenv("POCKETBASE_TEST_EMAIL", "68e82c0b58bd4ac0@8e8b3687496517e7.com")
-        password = os.getenv("POCKETBASE_TEST_PASSWORD", "2f199a97ac9e42e3b9e59b9d939b6e5f")
+        email = os.getenv(
+            "POCKETBASE_TEST_EMAIL", "68e82c0b58bd4ac0@8e8b3687496517e7.com"
+        )
+        password = os.getenv(
+            "POCKETBASE_TEST_PASSWORD", "2f199a97ac9e42e3b9e59b9d939b6e5f"
+        )
         client = PocketBase(url)
         cred = {
             "email": email,
