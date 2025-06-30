@@ -20,3 +20,17 @@ class CollectionField:
     pattern: str | None = None
     primary_key: bool = False
     auto_generate_pattern: str | None = None
+    onCreate: bool = False
+    onUpdate: bool = False
+    onlyInt: bool = False
+    exceptDomains: list[str] = field(default_factory=list)
+    onlyDomains: list[str] = field(default_factory=list)
+    maxSize: int | None = None
+    cascadeDelete: bool = False
+    collectionId: str | None = None
+    maxSelect: int | None = None
+    minSelect: int | None = None
+    mimeTypes: list[str] = field(default_factory=list)
+    protected: bool = False
+    thumbs: list[str] = field(default_factory=list)
+    values: list[str] = field(default_factory=list)
