@@ -36,7 +36,6 @@ jobs:
           mkdir $TMP_EMAIL_DIR 
           bash ./tests/integration/pocketbase &
           sleep 1
-          bash ./tests/integration/pocketbase_su
 
       - name: Lint with ruff
         run: uv run ruff check .

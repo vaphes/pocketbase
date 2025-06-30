@@ -11,4 +11,5 @@ release=$(curl -IkLs -o /dev/null -w %{url_effective} https://github.com/pocketb
 echo ${release}
 wget -qO- https://github.com/pocketbase/pocketbase/releases/download/v${release}/pocketbase_${release}_linux_amd64.zip | bsdtar -xvf- --include pocketbase -C .
 chmod 755 ./pocketbase
+./pocketbase superuser upsert 68e82c0b58bd4ac0@8e8b3687496517e7.com 2f199a97ac9e42e3b9e59b9d939b6e5f
 ./pocketbase serve
