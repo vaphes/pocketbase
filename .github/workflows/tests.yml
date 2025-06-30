@@ -28,6 +28,8 @@ jobs:
 
       - name: Install dependencies
         run: |
+          sudo apt-get update
+          sudo apt-get install libarchive-tools -y
           python -m pip install uv
           uv sync
 
