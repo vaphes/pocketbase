@@ -1,13 +1,18 @@
-[tool.poetry]
+[project]
 name = "pocketbase"
-version = "0.15.0"
+version = "0.16.0"
 description = "PocketBase SDK for python."
-authors = ["Vithor Jaeger <vaphes@gmail.com>", "Max Amling <max-amling@web.de>"]
+authors = [
+    { name = "Vithor Jaeger", email = "vaphes@gmail.com" },
+    { name = "Max Amling", email = "max-amling@web.de" },
+]
+requires-python = ">=3.9"
 readme = "README.md"
 license = "MIT"
-keywords = ["pocketbase", "sdk"]
-homepage = "https://github.com/vaphes/pocketbase"
-repository = "https://github.com/vaphes/pocketbase"
+keywords = [
+    "pocketbase",
+    "sdk",
+]
 classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
@@ -19,21 +24,24 @@ classifiers = [
     "Operating System :: OS Independent",
     "Intended Audience :: Developers",
 ]
+dependencies = ["httpx>=0.27.2"]
 
-[tool.poetry.dependencies]
-python = ">=3.9"
-httpx = ">=0.27.2"
+[project.urls]
+Homepage = "https://github.com/vaphes/pocketbase"
+Repository = "https://github.com/vaphes/pocketbase"
 
-[tool.poetry.group.dev.dependencies]
-pytest = "^8.3.3"
-pytest-httpx = "^0.30.0"
-ruff = "^0.6.5"
-coveralls = { version = "^4.0.1", python = "<3.13" }
+[dependency-groups]
+dev = [
+    "pytest>=8.3.3,<9",
+    "pytest-httpx>=0.30.0,<0.31",
+    "ruff>=0.7.0,<0.8",
+    "coveralls>=4.0.1,<5 ; python_version < '3.14'",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [tool.ruff]
 line-length = 80
 target-version = "py39"
-
-[build-system]
-requires = ["poetry-core>=1.9.0"]
-build-backend = "poetry.core.masonry.api"

@@ -2,9 +2,9 @@ name: Tests
 
 on:
   push:
-    branches: ["master"]
+    branches: ["master", "main"]
   pull_request:
-    branches: ["master"]
+    branches: ["master", "main"]
 
 env:
   TMP_EMAIL_DIR: /tmp/tmp_email_dir
@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12"]
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
 
     steps:
       - uses: actions/checkout@v4
@@ -28,10 +28,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install pipx
-          pipx install poetry
-          poetry install --sync
-          sudo apt-get install libarchive-tools -y
+          python -m pip install uv
+          uv sync
 
       - name: Start a pocketbase database instance for api testing
         run: |
@@ -40,13 +38,13 @@ jobs:
           sleep 1
 
       - name: Lint with ruff
-        run: poetry run ruff check .
+        run: uv run ruff check .
 
       - name: Test with pytest
         run: |
-          poetry run coverage run --source=pocketbase --branch -m pytest tests/ 
-          poetry run coverage report -m
+          uv run coverage run --source=pocketbase --branch -m pytest tests/ 
+          uv run coverage report -m
 
       - name: Report coverage results to coveralls.io
         run: |
-          poetry run coveralls --verbose
+          uv run coveralls --verbose
