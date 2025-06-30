@@ -27,7 +27,7 @@ class AdminService(CrudService[Admin]):
         return Admin(data)
 
     def base_crud_path(self) -> str:
-        return "/api/collections/_superusers"
+        return "/api/admins"
 
     def update(
         self,
