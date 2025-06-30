@@ -36,7 +36,7 @@ def client() -> PocketBase:
             client.admins.create(cred)
         except ClientResponseError:
             pass
-        client.admins.auth_with_password(cred["email"], cred["password"])
+        client.admins.auth_with_password(str(cred["email"]), str(cred["password"]))
         return client
     except Exception:
         pytest.skip("No Database found on 127.0.0.1:8090")
