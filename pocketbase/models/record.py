@@ -34,63 +34,59 @@ class Record(BaseModel):
         for key, value in self.expand.items():
             self.expand[key] = self.parse_expanded(value)
 
+    def _snake_to_camel(self, name: str) -> str:
+        """Convert snake_case to camelCase (reverse of camel_to_snake)."""
+        if '_' not in name:
+            return name
+        parts = name.split('_')
+        return parts[0] + ''.join(word.capitalize() for word in parts[1:])
+
     def to_dict(self) -> dict[str, Any]:
         """
-        Convert the Record to a dictionary representation.
+        Returns a dictionary representation of the Record that can be serialized to JSON.
+        
+        This method serializes all attributes of the Record, including:
+        - Base attributes (id, created, updated).
+        - Collection attributes (collectionId, collectionName).
+        - Expand data.
+        - All dynamic attributes set during the load method.
         
         Returns:
-            dict: A dictionary containing all the record's data, including
-                  base fields (id, created, updated), collection info,
-                  dynamic fields, and expanded relations.
+            dict[str, Any]: Dictionary representation of the Record.
         """
-        result = {
-            "id": self.id,
-            "created": self.created,
-            "updated": self.updated,
-            "collection_id": self.collection_id,
-            "collection_name": self.collection_name,
-        }
+        data = {}
         
-        # Add all dynamic fields (excluding the base fields and expand)
-        for key, value in self.__dict__.items():
-            if key not in ["id", "created", "updated", "collection_id", "collection_name", "expand"]:
-                result[key] = self._serialize_value(value)
+        # Add base attributes
+        data['id'] = self.id
+        data['created'] = self.created.isoformat() if hasattr(self.created, 'isoformat') else str(self.created)
+        data['updated'] = self.updated.isoformat() if hasattr(self.updated, 'isoformat') else str(self.updated)
         
-        # Add expanded relations
-        if hasattr(self, 'expand') and self.expand:
-            result["expand"] = self._serialize_value(self.expand)
+        # Add expand data
+        data['expand'] = self.expand
         
-        return result
-
-    def to_json(self, **kwargs) -> str:
-        """
-        Convert the Record to a JSON string representation.
+        # Add all other dynamic attributes (excluding special attributes)
+        exclude_attrs = {'id', 'created', 'updated', 'expand', 'client'}
+        for attr_name in dir(self):
+            if not attr_name.startswith('_') and attr_name not in exclude_attrs:
+                try:
+                    attr_value = getattr(self, attr_name)
+                    if not callable(attr_value):
+                        # Use the same auto_snake_case setting as the client for consistency
+                        auto_snake_case = (
+                            getattr(self, "client", None) 
+                            and getattr(self.client, "auto_snake_case", True)
+                        )
+                        
+                        if auto_snake_case and '_' in attr_name:
+                            # Convert snake_case back to camelCase for JSON output
+                            json_key = self._snake_to_camel(attr_name)
+                        else:
+                            # Keep original format
+                            json_key = attr_name
+                            
+                        data[json_key] = attr_value
+                except (AttributeError, TypeError):
+                    # Skip attributes that can't be accessed or serialized
+                    continue
         
-        Args:
-            **kwargs: Additional arguments to pass to json.dumps()
-        
-        Returns:
-            str: JSON string representation of the record
-        """
-        return json.dumps(self.to_dict(), **kwargs)
-
-    def _serialize_value(self, value: Any) -> Any:
-        """
-        Recursively serialize a value to be JSON-compatible.
-        
-        Args:
-            value: The value to serialize
-            
-        Returns:
-            The serialized value
-        """
-        if isinstance(value, Record):
-            return value.to_dict()
-        elif isinstance(value, list):
-            return [self._serialize_value(item) for item in value]
-        elif isinstance(value, dict):
-            return {key: self._serialize_value(val) for key, val in value.items()}
-        elif hasattr(value, 'isoformat'):  # datetime objects
-            return value.isoformat()
-        else:
-            return value
+        return data
