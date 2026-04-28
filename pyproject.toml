@@ -1,47 +1,42 @@
 [project]
 name = "pocketbase"
-version = "0.16.0"
+version = "0.17.0"
 description = "PocketBase SDK for python."
 authors = [
     { name = "Vithor Jaeger", email = "vaphes@gmail.com" },
     { name = "Max Amling", email = "max-amling@web.de" },
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 readme = "README.md"
 license = "MIT"
-keywords = [
-    "pocketbase",
-    "sdk",
-]
+keywords = ["pocketbase", "sdk"]
 classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Intended Audience :: Developers",
 ]
 dependencies = ["httpx>=0.27.2"]
 
-[project.urls]
-Homepage = "https://github.com/vaphes/pocketbase"
-Repository = "https://github.com/vaphes/pocketbase"
-
 [dependency-groups]
 dev = [
-    "pytest>=8.3.3,<9",
-    "pytest-httpx>=0.30.0,<0.31",
-    "ruff>=0.7.0,<0.8",
-    "coveralls>=4.0.1,<5 ; python_version < '3.14'",
+    "pytest>=8.3.3",
+    "pytest-httpx>=0.30.0",
+    "ruff>=0.7.0",
+    "coveralls>=4.0.1",
+    "environs>=14.5.0",
 ]
 
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["uv_build>=0.9.8,<0.10.0"]
+build-backend = "uv_build"
 
 [tool.ruff]
 line-length = 80
-target-version = "py39"
+target-version = "py310"

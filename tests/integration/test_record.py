@@ -1,3 +1,4 @@
+from typing import Any
 from uuid import uuid4
 
 import pytest
@@ -10,7 +11,7 @@ class TestRecordService:
     def test_init_collection(self, client: PocketBase, state):
         srv = client.collections
         # create collection
-        schema = [
+        fields: list[dict[str, Any]] = [
             {
                 "name": "title",
                 "type": "text",
@@ -21,34 +22,31 @@ class TestRecordService:
             {
                 "name": uuid4().hex,
                 "type": "base",
-                "schema": schema,
+                "fields": fields,
             }
         )
-        schema.append(
+        assert state.coll.id is not None
+        fields.append(
             {
                 "name": "rel",
                 "type": "relation",
                 "required": False,
-                "options": {
-                    "collectionId": state.coll.id,
-                    "cascadeDelete": False,
-                    "maxSelect": 1,
-                },
+                "collectionId": state.coll.id,
+                "cascadeDelete": False,
+                "maxSelect": 1,
             },
         )
-        schema.append(
+        fields.append(
             {
                 "name": "multirel",
                 "type": "relation",
                 "required": False,
-                "options": {
-                    "collectionId": state.coll.id,
-                    "cascadeDelete": False,
-                    "maxSelect": 5,
-                },
+                "collectionId": state.coll.id,
+                "cascadeDelete": False,
+                "maxSelect": 5,
             },
         )
-        state.coll = srv.update(state.coll.id, {"schema": schema})
+        state.coll = srv.update(state.coll.id, {"fields": fields})
 
     def test_create_record(self, client: PocketBase, state):
         bname = uuid4().hex

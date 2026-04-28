@@ -8,7 +8,7 @@ class TestLogService:
     def test_log_get(self, client: PocketBase, state):
         if len(state.list.items) > 0:
             v = state.list.items[0]
-            r = client.logs.get(v.id)
+            r = client.logs.get_one(v.id)
             assert v.id == r.id
             assert v.created == r.created
 

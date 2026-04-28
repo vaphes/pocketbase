@@ -9,7 +9,7 @@ import pytest
 
 from pocketbase import PocketBase
 from pocketbase.models import FileUpload
-from pocketbase.models.utils.base_model import BaseModel
+from pocketbase.models.base_model import BaseModel
 from pocketbase.utils import ClientResponseError
 
 

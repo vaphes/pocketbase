@@ -11,7 +11,7 @@ class TestFileService:
     def test_init_collection(self, client: PocketBase, state):
         srv = client.collections
         # create collection
-        schema = [
+        fields = [
             {
                 "name": "title",
                 "type": "text",
@@ -21,21 +21,19 @@ class TestFileService:
                 "name": "image",
                 "type": "file",
                 "required": False,
-                "options": {
-                    "maxSelect": 3,
-                    "maxSize": 5242880,
-                    "mimeTypes": [
-                        "application/octet-stream",
-                        "text/plain",
-                    ],
-                },
+                "maxSelect": 3,
+                "maxSize": 5242880,
+                "mimeTypes": [
+                    "application/octet-stream",
+                    "text/plain",
+                ],
             },
         ]
         state.coll = srv.create(
             {
                 "name": uuid4().hex,
                 "type": "base",
-                "schema": schema,
+                "fields": fields,
             }
         )
 

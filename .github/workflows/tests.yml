@@ -2,21 +2,21 @@ name: Tests
 
 on:
   push:
-    branches: ["master", "main"]
+    branches: [ "master", "main" ]
   pull_request:
-    branches: ["master", "main"]
+    branches: [ "master", "main" ]
 
 env:
   TMP_EMAIL_DIR: /tmp/tmp_email_dir
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  
+
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+        python-version: [ "3.9", "3.10", "3.11", "3.12", "3.13" ]
 
     steps:
       - uses: actions/checkout@v4
