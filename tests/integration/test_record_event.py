@@ -64,9 +64,9 @@ class TestRecordEventService:
         def callback(e: MessageData):
             state.test_subscribe_event2 = e
 
-        c.subscribeOne(r.id, callback_ex)
+        c.subscribe_one(r.id, callback_ex)
         # subscribing a second time should erase first subscription (for code coverage)
-        c.subscribeOne(r.id, callback)
+        c.subscribe_one(r.id, callback)
         sleep(0.1)
         for _ in range(2):
             r = c.update(r.id, {"title": uuid4().hex})

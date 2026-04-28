@@ -8,10 +8,9 @@ class DummyClient:
 
 
 class DummyRecord(Record):
-    def __init__(self, data, client=None):
-        self.client = client
+    def __init__(self, data, **kwargs):
         self.expand = {}
-        self.load(data)
+        self.load(data, **kwargs)
 
 
 def test_camel_to_snake_enabled():
@@ -24,8 +23,8 @@ def test_camel_to_snake_enabled():
 
 def test_record_snake_case_enabled():
     client = DummyClient(auto_snake_case=True)
-    data = {"myFieldName": "value", "anotherField": 42}
-    record = DummyRecord(data, client=client)
+    data = {"id": "1", "myFieldName": "value", "anotherField": 42}
+    record = DummyRecord(data, auto_snake_case=client.auto_snake_case)
     assert hasattr(record, "my_field_name")
     assert hasattr(record, "another_field")
     assert record.my_field_name == "value"  # type: ignore
@@ -34,8 +33,8 @@ def test_record_snake_case_enabled():
 
 def test_record_snake_case_disabled():
     client = DummyClient(auto_snake_case=False)
-    data = {"myFieldName": "value", "anotherField": 42}
-    record = DummyRecord(data, client=client)
+    data = {"id": "1", "myFieldName": "value", "anotherField": 42}
+    record = DummyRecord(data, auto_snake_case=client.auto_snake_case)
     assert hasattr(record, "myFieldName")
     assert hasattr(record, "anotherField")
     assert not hasattr(record, "my_field_name")
