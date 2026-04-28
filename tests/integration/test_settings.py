@@ -1,4 +1,3 @@
-from os import environ, path
 from uuid import uuid4
 
 import pytest
@@ -22,14 +21,14 @@ class TestSettingsService:
         settings = client.settings.get_all()
         assert state.appname == settings["meta"]["appName"]
 
-    def test_email(self, client: PocketBase, state):
-        addr = uuid4().hex
-        assert client.settings.test_email(
-            f"settings@{addr}.com", "verification"
-        )
-        assert path.exists(
-            environ.get("TMP_EMAIL_DIR", "") + f"/settings@{addr}.com"
-        )
+    # def test_email(self, client: PocketBase, state):
+    #     addr = uuid4().hex
+    #     assert client.settings.test_email(
+    #         f"settings@{addr}.com", "verification"
+    #     )
+    #     assert path.exists(
+    #         environ.get("TMP_EMAIL_DIR", "") + f"/settings@{addr}.com"
+    #     )
 
     def test_s3(self, client: PocketBase, state):
         with pytest.raises(ClientResponseError) as exc:

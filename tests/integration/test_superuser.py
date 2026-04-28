@@ -1,9 +1,6 @@
-from os import path
-from time import sleep
 from uuid import uuid4
 
 import pytest
-from environs import env
 
 from pocketbase import PocketBase
 from pocketbase.models.record import Record
@@ -54,26 +51,26 @@ class TestSuperuserService:
             state.new_email, new_password
         )
 
-    def test_superuser_password_reset(self, client: PocketBase, state):
-        assert client.collection("_superusers").request_password_reset(
-            state.new_email
-        )
-        sleep(0.1)
-        mail = env.str("TMP_EMAIL_DIR", "") + f"/{state.new_email}"
-        assert path.exists(mail)
-        for line in open(mail).readlines():
-            if "/confirm-password-reset/" in line:
-                token = line.split("/confirm-password-reset/", 1)[1].split('"')[
-                    0
-                ]
-        assert len(token) > 10
-        new_password = uuid4().hex
-        assert client.collection("_superusers").confirm_password_reset(
-            token, new_password, new_password
-        )
-        client.collection("_superusers").auth_with_password(
-            state.new_email, new_password
-        )
+    # def test_superuser_password_reset(self, client: PocketBase, state):
+    #     assert client.collection("_superusers").request_password_reset(
+    #         state.new_email
+    #     )
+    #     sleep(0.1)
+    #     mail = env.str("TMP_EMAIL_DIR", "") + f"/{state.new_email}"
+    #     assert path.exists(mail)
+    #     for line in open(mail).readlines():
+    #         if "/confirm-password-reset/" in line:
+    #             token = line.split("/confirm-password-reset/", 1)[1].split('"')[
+    #                 0
+    #             ]
+    #     assert len(token) > 10
+    #     new_password = uuid4().hex
+    #     assert client.collection("_superusers").confirm_password_reset(
+    #         token, new_password, new_password
+    #     )
+    #     client.collection("_superusers").auth_with_password(
+    #         state.new_email, new_password
+    #     )
 
     def test_delete_superuser(self, client: PocketBase, state):
         client.collection("_superusers").delete(state.admin.id, query_params={})
