@@ -7,7 +7,7 @@ from typing import Protocol
 from pocketbase.models.record import Record
 from pocketbase.utils import get_token_payload, is_token_expired
 
-type OnStoreChangeCallback = Callable[[str, Record | None], None]
+OnStoreChangeCallback = Callable[[str, Record | None], None]
 
 
 class AuthStoreProtocol(Protocol):
