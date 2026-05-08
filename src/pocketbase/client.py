@@ -198,8 +198,8 @@ class Client:
 
     # Deprecated methods and properties
 
-    @deprecated
     @property
+    @deprecated
     def admins(self) -> RecordService:
         """
         **Deprecated!**
