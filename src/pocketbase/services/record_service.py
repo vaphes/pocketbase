@@ -43,6 +43,7 @@ class AuthProviderInfo:
     code_verifier: str
     code_challenge: str
     code_challenge_method: str
+    logo: str | None
 
 
 @dataclass
