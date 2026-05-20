@@ -1,6 +1,6 @@
 [project]
 name = "pocketbase"
-version = "0.17.1"
+version = "0.17.2"
 description = "PocketBase SDK for python."
 authors = [
     { name = "Vithor Jaeger", email = "vaphes@gmail.com" },
