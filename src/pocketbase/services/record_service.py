@@ -47,9 +47,34 @@ class AuthProviderInfo:
 
 @dataclass
 class AuthMethodsList:
+    @dataclass
+    class Password:
+        enabled: bool
+        identity_fields: list[str]
+
+    @dataclass
+    class OAuth2:
+        enabled: bool
+        providers: list[AuthProviderInfo]
+
+    @dataclass
+    class MFA:
+        enabled: bool
+        duration: int
+
+    @dataclass
+    class OTP:
+        enabled: bool
+        duration: int
+
+    password: Password
+    oauth2: OAuth2
+    mfa: MFA
+    otp: OTP
+    # TODO: remove fields below after v0.23 deprecation period
+    auth_providers: list[AuthProviderInfo]
     username_password: bool
     email_password: bool
-    auth_providers: list[AuthProviderInfo]
     only_verified: bool = False
 
 
@@ -162,8 +187,6 @@ class RecordService(CrudService[Record]):
             self.base_collection_path() + "/auth-methods",
             {"method": "GET", "params": query_params},
         )
-        username_password = response_data.pop("usernamePassword", False)
-        email_password = response_data.pop("emailPassword", False)
 
         def apply_pythonic_keys(ap: dict[str, Any]) -> dict[str, Any]:
             pythonic_keys_ap = {
@@ -174,6 +197,28 @@ class RecordService(CrudService[Record]):
             }
             return pythonic_keys_ap
 
+        password = response_data.get("password", {})
+        password_enabled = password.get("enabled", False)
+        password_identity_fields = password.get("identityFields", [])
+        oauth2 = response_data.get("oauth2", {})
+        oauth2_enabled = oauth2.get("enabled", False)
+        oauth2_providers_data = oauth2.get("providers", [])
+        oauth2_providers: list[AuthProviderInfo] = []
+        if oauth2_providers_data:
+            oauth2_providers = [
+                AuthProviderInfo(**apply_pythonic_keys(provider))
+                for provider in oauth2_providers_data
+            ]
+        mfa = response_data.get("mfa", {})
+        mfa_enabled = mfa.get("enabled", False)
+        mfa_duration = mfa.get("duration", 0)
+        otp = response_data.get("otp", {})
+        otp_enabled = otp.get("enabled", False)
+        otp_duration = otp.get("duration", 0)
+
+        # TODO: remove deprecated fields below after v0.23 deprecation period
+        username_password = response_data.pop("usernamePassword", False)
+        email_password = response_data.pop("emailPassword", False)
         auth_providers_data = response_data.get("authProviders", [])
         auth_providers: list[AuthProviderInfo] = []
         if auth_providers_data:
@@ -184,6 +229,16 @@ class RecordService(CrudService[Record]):
                 )
             ]
         return AuthMethodsList(
+            password=AuthMethodsList.Password(
+                enabled=password_enabled,
+                identity_fields=password_identity_fields,
+            ),
+            oauth2=AuthMethodsList.OAuth2(
+                enabled=oauth2_enabled, providers=oauth2_providers
+            ),
+            mfa=AuthMethodsList.MFA(enabled=mfa_enabled, duration=mfa_duration),
+            otp=AuthMethodsList.OTP(enabled=otp_enabled, duration=otp_duration),
+            # TODO: remove deprecated fields below after v0.23 deprecation period
             username_password=username_password,
             email_password=email_password,
             auth_providers=auth_providers,

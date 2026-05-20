@@ -4,6 +4,7 @@ import pytest
 
 from pocketbase import PocketBase
 from pocketbase.models.record import Record
+from pocketbase.services.record_service import AuthMethodsList
 from pocketbase.utils import ClientResponseError
 
 
@@ -118,3 +119,7 @@ def test_list_auth_methods(client):
     assert isinstance(val.username_password, bool)
     assert isinstance(val.email_password, bool)
     assert isinstance(val.auth_providers, list)
+    assert isinstance(val.password, AuthMethodsList.Password)
+    assert isinstance(val.oauth2, AuthMethodsList.OAuth2)
+    assert isinstance(val.mfa, AuthMethodsList.MFA)
+    assert isinstance(val.otp, AuthMethodsList.OTP)
